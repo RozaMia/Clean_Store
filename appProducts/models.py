@@ -13,6 +13,14 @@ class Category(models.Model):
         unique=True,
         blank=True
     )
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='children',
+        verbose_name='Родительская категория'
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -20,7 +28,9 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.title
+        if self.parent:
+            return f"└─ {self.title} (в {self.parent})"
+        return f"📁 {self.title}"
 
     class Meta:
         verbose_name = "Категория"
