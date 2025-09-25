@@ -10,6 +10,13 @@
     <a href="{% url 'appProducts:category_list' %}" class="btn">Перейти в каталог</a>
 </div>
 
+<h3>Новинки</h3>
+<div class="products-grid">
+    {% for product in new_products %}
+        <!-- карточка товара -->
+    {% endfor %}
+</div>
+
 <div class="categories-preview">
     <h3>Популярные категории</h3>
     <!-- Можно добавить превью категорий позже -->

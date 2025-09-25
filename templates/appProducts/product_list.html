@@ -11,6 +11,20 @@
 
 <h2>{{ subcategory.title }}</h2>
 
+<div class="filters">
+    <a href="?tag=new" class="tag">Новинки</a>
+    <a href="?tag=hit" class="tag">Хиты</a>
+    <a href="?tag=sale" class="tag">Распродажа</a>
+    <a href="." class="tag">Все</a>
+</div>
+
+<div class="product-card">
+    {% if product.is_new %}<span class="badge new">Новинка</span>{% endif %}
+    {% if product.is_hit %}<span class="badge hit">Хит</span>{% endif %}
+    {% if product.is_sale %}<span class="badge sale">Распродажа</span>{% endif %}
+    <!-- ... -->
+</div>
+
 <div class="products-grid">
     {% for product in page_obj %}
         <div class="product-card">

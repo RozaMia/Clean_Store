@@ -1,6 +1,6 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from .models import Category, Subcategory, Product, ProductImage
+from .models import Category, Subcategory, Product, ProductImage, OrderItem, Order
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
@@ -84,3 +84,15 @@ class ProductImageAdmin(ModelAdmin):
     list_filter = ['product']
     search_fields = ['product__name']
     ordering = ['product']
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+
+@admin.register(Order)
+class OrderAdmin(ModelAdmin):
+    list_display = ['id', 'first_name', 'last_name', 'status', 'total_price', 'created_at']
+    list_filter = ['status', 'created_at']
+    list_editable = ['status']
+    inlines = [OrderItemInline]
+    readonly_fields = ['user', 'first_name', 'last_name', 'phone', 'address', 'total_price', 'created_at']

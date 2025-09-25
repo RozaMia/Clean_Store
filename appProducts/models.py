@@ -136,6 +136,9 @@ class Product(models.Model):
         verbose_name='Дата изменения',
         auto_now=True
     )
+    is_new = models.BooleanField("Новинка", default=False)
+    is_hit = models.BooleanField("Хит продаж", default=False)
+    is_sale = models.BooleanField("Распродажа", default=False)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -176,9 +179,45 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     added_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('user', 'product')
+
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('new', 'Новый'),
+        ('processing', 'В обработке'),
+        ('shipped', 'Отправлен'),
+        ('delivered', 'Доставлен'),
+        ('cancelled', 'Отменён'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Пользователь")
+    first_name = models.CharField("Имя", max_length=100)
+    last_name = models.CharField("Фамилия", max_length=100)
+    phone = models.CharField("Телефон", max_length=20)
+    address = models.TextField("Адрес доставки")
+    status = models.CharField("Статус", max_length=20, choices=STATUS_CHOICES, default='new')
+    total_price = models.DecimalField("Итого", max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField("Дата заказа", auto_now_add=True)
+
     def __str__(self):
-        return f"{self.user.username} — {self.product.name} x{self.quantity}"
+        return f"Заказ №{self.id} от {self.created_at.strftime('%d.%m.%Y')}"
 
     class Meta:
-        verbose_name = "Товар в корзине"
-        verbose_name_plural = "Корзина"
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
+        ordering = ['-created_at']
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, verbose_name="Заказ")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
+    quantity = models.PositiveIntegerField("Количество", default=1)
+    price = models.DecimalField("Цена за ед.", max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.product.name} x{self.quantity}"
+
+    class Meta:
+        verbose_name = "Товар в заказе"
+        verbose_name_plural = "Товары в заказе"
