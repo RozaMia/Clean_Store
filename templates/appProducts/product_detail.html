@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+    <a href="{% url 'appProducts:category_list' %}">Каталог</a> →
+    <a href="{% url 'appProducts:subcategory_list' product.subcategory.category.slug %}">
+        {{ product.subcategory.category.title }}
+    </a> →
+    <a href="{% url 'appProducts:product_list' product.subcategory.category.slug product.subcategory.slug %}">
+        {{ product.subcategory.title }}
+    </a> →
+    <span>{{ product.name }}</span>
+</nav>
+
+<div class="product-detail">
+    <div class="product-images">
+        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-image">
+        {% if extra_images %}
+            <div class="extra-images">
+                {% for img in extra_images %}
+                    <img src="{{ img.image.url }}" alt="Доп. фото" class="extra-image">
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="product-info">
+        <h1>{{ product.name }}</h1>
+        <p class="price">{{ product.price }}</p>
+        <div class="description">
+            {{ product.description|default:"Описание отсутствует."|linebreaks }}
+        </div>
+        <button class="btn">В корзину</button>
+    </div>
+</div>
+{% endblock %}

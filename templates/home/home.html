@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Главная — Clean Store{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h2>Добро пожаловать в Clean Store!</h2>
+    <p>Лучшие средства и инвентарь для уборки дома и офиса.</p>
+    <a href="{% url 'appProducts:category_list' %}" class="btn">Перейти в каталог</a>
+</div>
+
+<div class="categories-preview">
+    <h3>Популярные категории</h3>
+    <!-- Можно добавить превью категорий позже -->
+</div>
+{% endblock %}

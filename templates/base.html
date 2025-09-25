@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Clean Store{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1><a href="{% url 'appProducts:category_list' %}">🧼 Clean Store</a></h1>
+            <nav>
+                <a href="{% url 'appProducts:category_list' %}">Каталог</a>
+                <!-- Можно добавить: корзина, личный кабинет и т.д. -->
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Clean Store. Все права защищены.</p>
+        </div>
+    </footer>
+</body>
+</html>

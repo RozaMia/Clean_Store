@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">
+    <a href="{% url 'appProducts:category_list' %}">Каталог</a> →
+    <span>{{ category.title }}</span>
+</nav>
+
+<h2>{{ category.title }}</h2>
+
+<div class="subcategories-list">
+    {% for sub in subcategories %}
+        <div class="subcategory-item">
+            <a href="{% url 'appProducts:product_list' category.slug sub.slug %}">
+                {{ sub.title }}
+            </a>
+        </div>
+    {% empty %}
+        <p>Подкатегории отсутствуют.</p>
+    {% endfor %}
+</div>
+{% endblock %}

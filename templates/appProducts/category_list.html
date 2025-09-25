@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Каталог товаров{% endblock %}
+
+{% block content %}
+<h2>Каталог товаров</h2>
+
+<div class="categories-grid">
+    {% for category in categories %}
+        <div class="category-card">
+            <a href="{% url 'appProducts:subcategory_list' category.slug %}">
+                {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
+                {% else %}
+                    <div class="category-placeholder">🧽</div>
+                {% endif %}
+                <h3>{{ category.title }}</h3>
+            </a>
+        </div>
+    {% empty %}
+        <p>Категории временно недоступны.</p>
+    {% endfor %}
+</div>
+{% endblock %}

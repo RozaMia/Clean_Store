@@ -60,3 +60,6 @@ def product_detail(request, category_slug, subcategory_slug, product_slug):
         'product': product,
         'extra_images': extra_images
     })
+
+def home_view(request):
+    return render(request, 'home/home.html')
