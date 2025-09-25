@@ -4,7 +4,7 @@ from djmoney.models.fields import MoneyField
 
 class Category(models.Model):
     title = models.CharField(
-        verbose_name= 'Название',
+        verbose_name='Название',
         max_length=255,
         unique=True
     )
@@ -21,10 +21,11 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
-    
+
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        ordering = ['title']
 
 class Product(models.Model):
     name = models.CharField(
@@ -54,7 +55,12 @@ class Product(models.Model):
         verbose_name='Цена',
         max_digits=14,
         decimal_places=2,
-        default_currency = 'RUB'
+        default_currency='RUB'
+    )
+    is_active = models.BooleanField(
+        verbose_name='Активен',
+        default=True,
+        help_text='Снимите галочку, чтобы скрыть товар из магазина'
     )
     create_at = models.DateTimeField(
         verbose_name='Дата создания',
@@ -64,17 +70,20 @@ class Product(models.Model):
         verbose_name='Дата изменения',
         auto_now=True
     )
+
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.name)  # исправлено: self.name, а не self.title
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} ({self.category})"
-    
+
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
+        ordering = ['-create_at']
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -85,7 +94,7 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(
         upload_to='extra/',
-        verbose_name='Изображение'        
+        verbose_name='Изображение'
     )
 
     def __str__(self):
