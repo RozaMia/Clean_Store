@@ -1,6 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Category, Subcategory, Product
+from .models import Category, Subcategory, Product, CartItem
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def category_list(request):
     """Главная страница: список всех активных категорий"""
@@ -63,3 +65,19 @@ def product_detail(request, category_slug, subcategory_slug, product_slug):
 
 def home_view(request):
     return render(request, 'home/home.html')
+
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    cart_item, created = CartItem.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    messages.success(request, f"{product.name} добавлен в корзину!")
+    return redirect('appProducts:product_detail',
+                    category_slug=product.subcategory.category.slug,
+                    subcategory_slug=product.subcategory.slug,
+                    product_slug=product.slug)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from djmoney.models.fields import MoneyField
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     title = models.CharField(
@@ -168,3 +169,16 @@ class ProductImage(models.Model):
     class Meta:
         verbose_name = "Изображение продукта"
         verbose_name_plural = "изображения продуктов"
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} — {self.product.name} x{self.quantity}"
+
+    class Meta:
+        verbose_name = "Товар в корзине"
+        verbose_name_plural = "Корзина"
