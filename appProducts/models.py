@@ -4,7 +4,7 @@ from djmoney.models.fields import MoneyField
 
 class Category(models.Model):
     title = models.CharField(
-        verbose_name='Название',
+        verbose_name='Название категории',
         max_length=255,
         unique=True
     )
@@ -12,6 +12,29 @@ class Category(models.Model):
         verbose_name='Slug',
         unique=True,
         blank=True
+    )
+    description = models.TextField(
+        verbose_name='Описание',
+        blank=True,
+        null=True
+    )
+    image = models.ImageField(
+        verbose_name='Обложка категории',
+        upload_to='categories/',
+        blank=True,
+        null=True
+    )
+    is_active = models.BooleanField(
+        verbose_name='Активна',
+        default=True
+    )
+    create_at = models.DateTimeField(
+        verbose_name='Дата создания',
+        auto_now_add=True
+    )
+    update_at = models.DateTimeField(
+        verbose_name='Дата изменения',
+        auto_now=True
     )
 
     def save(self, *args, **kwargs):
@@ -24,8 +47,50 @@ class Category(models.Model):
 
     class Meta:
         verbose_name = "Категория"
-        verbose_name_plural = "Категории"
+        verbose_name_plural = "категории"
         ordering = ['title']
+
+
+class Subcategory(models.Model):
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='subcategories',
+        verbose_name='Основная категория'
+    )
+    title = models.CharField(
+        verbose_name='Название подкатегории',
+        max_length=255
+    )
+    slug = models.SlugField(
+        verbose_name='Slug',
+        blank=True
+    )
+    is_active = models.BooleanField(
+        verbose_name='Активна',
+        default=True
+    )
+    create_at = models.DateTimeField(
+        verbose_name='Дата создания',
+        auto_now_add=True
+    )
+    update_at = models.DateTimeField(
+        verbose_name='Дата изменения',
+        auto_now=True
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.category.title} {self.title}")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.category} → {self.title}"
+
+    class Meta:
+        verbose_name = "Подкатегория"
+        verbose_name_plural = "подкатегории"
+        ordering = ['category', 'title']
 
 class Product(models.Model):
     name = models.CharField(
@@ -37,10 +102,10 @@ class Product(models.Model):
         unique=True,
         blank=True
     )
-    category = models.ForeignKey(
-        Category,
+    subcategory = models.ForeignKey(
+        Subcategory,
         on_delete=models.CASCADE,
-        verbose_name='Категория'
+        verbose_name='Подкатегория'
     )
     description = models.TextField(
         verbose_name='Описание',
@@ -77,11 +142,11 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name} ({self.category})"
+        return f"{self.name} ({self.subcategory})"
 
     class Meta:
-        verbose_name = "Продукт"
-        verbose_name_plural = "Продукты"
+        verbose_name = "Товар для продажи"
+        verbose_name_plural = "товары для продажи"
         ordering = ['-create_at']
 
 
@@ -90,7 +155,7 @@ class ProductImage(models.Model):
         Product,
         on_delete=models.CASCADE,
         related_name='images',
-        verbose_name='Продукт'
+        verbose_name='Товар'
     )
     image = models.ImageField(
         upload_to='extra/',
@@ -102,4 +167,4 @@ class ProductImage(models.Model):
 
     class Meta:
         verbose_name = "Изображение продукта"
-        verbose_name_plural = "Изображения продуктов"
+        verbose_name_plural = "изображения продуктов"
