@@ -1,6 +1,6 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
-from djmoney.admin import MoneyField
+from djmoney.admin import MoneyField        
 from .models import Category, Product, ProductImage
 
 class ProductImageInline(admin.TabularInline):
