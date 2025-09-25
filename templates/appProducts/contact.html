@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Контакты — Clean Store{% endblock %}
+
+{% block content %}
+<h1>Контакты</h1>
+
+<div class="contact-info">
+    <h2>Свяжитесь с нами</h2>
+    
+    <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
+    <p><strong>Email:</strong> info@cleanstore.ru</p>
+    <p><strong>Адрес:</strong> г. Москва, ул. Чистая, д. 10</p>
+    
+    <h3>Режим работы:</h3>
+    <ul>
+        <li>Пн–Пт: 9:00 – 20:00</li>
+        <li>Сб–Вс: 10:00 – 18:00</li>
+    </ul>
+</div>
+
+<div class="contact-form">
+    <h2>Напишите нам</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Отправить</button>
+    </form>
+</div>
+
+<div class="map">
+    <h3>Мы на карте</h3>
+    <!-- Можно вставить iframe от Яндекс.Карт или 2ГИС -->
+    <p>Карта будет здесь (в продакшене — вставьте iframe)</p>
+</div>
+{% endblock %}

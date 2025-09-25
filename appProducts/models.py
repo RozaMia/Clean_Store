@@ -221,3 +221,16 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = "Товар в заказе"
         verbose_name_plural = "Товары в заказе"
+
+class ContactMessage(models.Model):
+    name = models.CharField("Имя", max_length=100)
+    email = models.EmailField("Email")
+    message = models.TextField("Сообщение")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Сообщение от {self.name}"
+
+    class Meta:
+        verbose_name = "Сообщение с сайта"
+        verbose_name_plural = "Сообщения с сайта"

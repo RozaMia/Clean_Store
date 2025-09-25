@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Category, Subcategory, Product, CartItem, Order, OrderItem
+from .models import Category, Subcategory, Product, CartItem, Order, OrderItem, ContactMessage
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django import forms
 
 def category_list(request):
     """Главная страница: список всех активных категорий"""
@@ -166,3 +167,24 @@ def checkout(request):
 
 def order_success(request):
     return render(request, 'appProducts/order_success.html')
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Сохранить в БД или отправить email
+            ContactMessage.objects.create(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                message=form.cleaned_data['message']
+            )
+            messages.success(request, "Ваше сообщение отправлено! Мы свяжемся с вами.")
+            return redirect('appProducts:contact')
+    else:
+        form = ContactForm()
+    return render(request, 'appProducts/contact.html', {'form': form})
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, label="Ваше имя")
+    email = forms.EmailField(label="Email")
+    message = forms.CharField(widget=forms.Textarea, label="Сообщение")
