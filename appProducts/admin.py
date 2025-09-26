@@ -1,14 +1,14 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin
-from .models import Category, Subcategory, Product, ProductImage, OrderItem, Order
+from unfold.admin import ModelAdmin, TabularInline
+from .models import Category, Subcategory, Product, ProductImage, OrderItem, Order, ContactMessage, CartItem
 
-class ProductImageInline(admin.TabularInline):
+class ProductImageInline(TabularInline):
     model = ProductImage
     extra = 1
     verbose_name = "Дополнительное изображение"
     verbose_name_plural = "Дополнительные изображения"
 
-class SubcategoryInline(admin.TabularInline):
+class SubcategoryInline(TabularInline):
     model = Subcategory
     extra = 1
     verbose_name = "Подкатегория"
@@ -85,9 +85,10 @@ class ProductImageAdmin(ModelAdmin):
     search_fields = ['product__name']
     ordering = ['product']
 
-class OrderItemInline(admin.TabularInline):
+class OrderItemInline(TabularInline):
     model = OrderItem
     extra = 0
+    readonly_fields = ['product', 'quantity', 'price']
 
 @admin.register(Order)
 class OrderAdmin(ModelAdmin):
@@ -96,3 +97,21 @@ class OrderAdmin(ModelAdmin):
     list_editable = ['status']
     inlines = [OrderItemInline]
     readonly_fields = ['user', 'first_name', 'last_name', 'phone', 'address', 'total_price', 'created_at']
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(ModelAdmin):
+    list_display = ['name', 'email', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['name', 'email', 'message']
+    readonly_fields = ['name', 'email', 'message', 'created_at']
+    ordering = ['-created_at']
+
+
+@admin.register(CartItem)
+class CartItemAdmin(ModelAdmin):
+    list_display = ['user', 'product', 'quantity', 'added_at']
+    list_filter = ['added_at', 'product__subcategory']
+    search_fields = ['user__username', 'product__name']
+    readonly_fields = ['added_at']
+    ordering = ['-added_at']
