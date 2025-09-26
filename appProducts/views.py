@@ -1,9 +1,14 @@
+import logging
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
+from django.db import transaction
+from django.core.exceptions import ValidationError
 from .models import Category, Subcategory, Product, CartItem, Order, OrderItem, ContactMessage
+from .forms import OrderForm, ContactForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django import forms
+
+logger = logging.getLogger(__name__)
 
 def category_list(request):
     """Главная страница: список всех активных категорий"""
@@ -79,15 +84,23 @@ def home_view(request):
 
 @login_required
 def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id, is_active=True)
-    cart_item, created = CartItem.objects.get_or_create(
-        user=request.user,
-        product=product
-    )
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-    messages.success(request, f"{product.name} добавлен в корзину!")
+    """Добавление товара в корзину с обработкой ошибок"""
+    try:
+        product = get_object_or_404(Product, id=product_id, is_active=True)
+        cart_item, created = CartItem.objects.get_or_create(
+            user=request.user,
+            product=product
+        )
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+        messages.success(request, f"{product.name} добавлен в корзину!")
+        logger.info(f"Пользователь {request.user.username} добавил товар {product.name} в корзину")
+    except Exception as e:
+        logger.error(f"Ошибка при добавлении товара в корзину: {e}")
+        messages.error(request, "Произошла ошибка при добавлении товара в корзину")
+        return redirect('appProducts:category_list')
+    
     return redirect('appProducts:product_detail',
                     category_slug=product.subcategory.category.slug,
                     subcategory_slug=product.subcategory.slug,
@@ -104,14 +117,24 @@ def cart_view(request):
 
 @login_required
 def update_cart(request, item_id):
-    cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity', 1))
-        if quantity > 0:
-            cart_item.quantity = quantity
-            cart_item.save()
-        else:
-            cart_item.delete()
+    """Обновление количества товара в корзине"""
+    try:
+        cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
+        if request.method == 'POST':
+            quantity = int(request.POST.get('quantity', 1))
+            if quantity > 0:
+                cart_item.quantity = quantity
+                cart_item.save()
+                messages.success(request, "Количество товара обновлено")
+            else:
+                cart_item.delete()
+                messages.success(request, "Товар удален из корзины")
+    except ValueError:
+        messages.error(request, "Некорректное количество товара")
+    except Exception as e:
+        logger.error(f"Ошибка при обновлении корзины: {e}")
+        messages.error(request, "Произошла ошибка при обновлении корзины")
+    
     return redirect('appProducts:cart')
 
 @login_required
@@ -122,39 +145,47 @@ def remove_from_cart(request, item_id):
 
 
 
-class OrderForm(forms.Form):
-    first_name = forms.CharField(max_length=100, label="Имя")
-    last_name = forms.CharField(max_length=100, label="Фамилия")
-    phone = forms.CharField(max_length=20, label="Телефон")
-    address = forms.CharField(widget=forms.Textarea, label="Адрес")
 
 @login_required
 def checkout(request):
+    """Оформление заказа с транзакционной безопасностью"""
     cart_items = CartItem.objects.filter(user=request.user).select_related('product')
     if not cart_items:
+        messages.warning(request, "Ваша корзина пуста")
         return redirect('appProducts:cart')
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            total = sum(item.product.price.amount * item.quantity for item in cart_items)
-            order = Order.objects.create(
-                user=request.user,
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-                phone=form.cleaned_data['phone'],
-                address=form.cleaned_data['address'],
-                total_price=total
-            )
-            for item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    quantity=item.quantity,
-                    price=item.product.price.amount
-                )
-            cart_items.delete()  # очистить корзину
-            return redirect('appProducts:order_success')
+            try:
+                with transaction.atomic():
+                    total = sum(item.product.price.amount * item.quantity for item in cart_items)
+                    order = Order.objects.create(
+                        user=request.user,
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name'],
+                        phone=form.cleaned_data['phone'],
+                        address=form.cleaned_data['address'],
+                        total_price=total
+                    )
+                    for item in cart_items:
+                        OrderItem.objects.create(
+                            order=order,
+                            product=item.product,
+                            quantity=item.quantity,
+                            price=item.product.price.amount
+                        )
+                    cart_items.delete()  # очистить корзину
+                    logger.info(f"Заказ #{order.id} создан пользователем {request.user.username}")
+                    messages.success(request, f"Заказ #{order.id} успешно создан!")
+                    return redirect('appProducts:order_success')
+            except ValidationError as e:
+                messages.error(request, f"Ошибка валидации: {e}")
+            except Exception as e:
+                logger.error(f"Ошибка при создании заказа: {e}")
+                messages.error(request, "Произошла ошибка при оформлении заказа. Попробуйте еще раз.")
+        else:
+            messages.error(request, "Пожалуйста, исправьте ошибки в форме")
     else:
         form = OrderForm()
 
@@ -169,22 +200,24 @@ def order_success(request):
     return render(request, 'appProducts/order_success.html')
 
 def contact_view(request):
+    """Обработка формы обратной связи"""
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # Сохранить в БД или отправить email
-            ContactMessage.objects.create(
-                name=form.cleaned_data['name'],
-                email=form.cleaned_data['email'],
-                message=form.cleaned_data['message']
-            )
-            messages.success(request, "Ваше сообщение отправлено! Мы свяжемся с вами.")
-            return redirect('appProducts:contact')
+            try:
+                ContactMessage.objects.create(
+                    name=form.cleaned_data['name'],
+                    email=form.cleaned_data['email'],
+                    message=form.cleaned_data['message']
+                )
+                logger.info(f"Получено сообщение от {form.cleaned_data['email']}")
+                messages.success(request, "Ваше сообщение отправлено! Мы свяжемся с вами.")
+                return redirect('appProducts:contact')
+            except Exception as e:
+                logger.error(f"Ошибка при сохранении сообщения: {e}")
+                messages.error(request, "Произошла ошибка при отправке сообщения")
+        else:
+            messages.error(request, "Пожалуйста, исправьте ошибки в форме")
     else:
         form = ContactForm()
     return render(request, 'appProducts/contact.html', {'form': form})
-
-class ContactForm(forms.Form):
-    name = forms.CharField(max_length=100, label="Ваше имя")
-    email = forms.EmailField(label="Email")
-    message = forms.CharField(widget=forms.Textarea, label="Сообщение")

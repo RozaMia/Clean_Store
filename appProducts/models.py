@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from djmoney.models.fields import MoneyField
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 class Category(models.Model):
     title = models.CharField(
@@ -65,6 +66,7 @@ class Subcategory(models.Model):
     )
     slug = models.SlugField(
         verbose_name='Slug',
+        unique=True,
         blank=True
     )
     is_active = models.BooleanField(
@@ -152,6 +154,13 @@ class Product(models.Model):
         verbose_name = "Товар для продажи"
         verbose_name_plural = "товары для продажи"
         ordering = ['-create_at']
+        indexes = [
+            models.Index(fields=['is_active', 'is_new']),
+            models.Index(fields=['subcategory', 'is_active']),
+            models.Index(fields=['is_hit', 'is_active']),
+            models.Index(fields=['is_sale', 'is_active']),
+            models.Index(fields=['-create_at']),
+        ]
 
 
 class ProductImage(models.Model):
@@ -192,14 +201,20 @@ class Order(models.Model):
         ('delivered', 'Доставлен'),
         ('cancelled', 'Отменён'),
     ]
+    
+    # Валидатор для телефона
+    phone_validator = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$',
+        message="Номер телефона должен быть в формате: '+999999999'. До 15 цифр разрешено."
+    )
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Пользователь")
     first_name = models.CharField("Имя", max_length=100)
     last_name = models.CharField("Фамилия", max_length=100)
-    phone = models.CharField("Телефон", max_length=20)
+    phone = models.CharField("Телефон", max_length=20, validators=[phone_validator])
     address = models.TextField("Адрес доставки")
     status = models.CharField("Статус", max_length=20, choices=STATUS_CHOICES, default='new')
-    total_price = models.DecimalField("Итого", max_digits=10, decimal_places=2)
+    total_price = MoneyField("Итого", max_digits=10, decimal_places=2, default_currency='RUB')
     created_at = models.DateTimeField("Дата заказа", auto_now_add=True)
 
     def __str__(self):
@@ -215,7 +230,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, verbose_name="Заказ")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Товар")
     quantity = models.PositiveIntegerField("Количество", default=1)
-    price = models.DecimalField("Цена за ед.", max_digits=10, decimal_places=2)
+    price = MoneyField("Цена за ед.", max_digits=10, decimal_places=2, default_currency='RUB')
 
     def __str__(self):
         return f"{self.product.name} x{self.quantity}"

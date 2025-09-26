@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 {% block title %}Корзина{% endblock %}
 {% block content %}
 <h1>Ваша корзина</h1>
@@ -27,7 +28,7 @@
                     </form>
                 </td>
                 <td>{{ item.product.price }}</td>
-                <td>{{ item.product.price|multiply:item.quantity }}</td>
+                <td>{% cart_item_total item %} ₽</td>
                 <td>
                     <a href="{% url 'appProducts:remove_from_cart' item.id %}" class="btn btn-danger">Удалить</a>
                 </td>
