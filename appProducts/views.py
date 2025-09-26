@@ -120,7 +120,7 @@ def remove_from_cart(request, item_id):
     cart_item.delete()
     return redirect('appProducts:cart')
 
-from django import forms
+
 
 class OrderForm(forms.Form):
     first_name = forms.CharField(max_length=100, label="Имя")

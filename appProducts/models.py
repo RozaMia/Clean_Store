@@ -181,6 +181,8 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+        verbose_name = "Товар в корзине"
+        verbose_name_plural = "Товары в корзине"
 
 class Order(models.Model):
     STATUS_CHOICES = [
