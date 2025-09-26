@@ -1,24 +1,244 @@
 {% extends "base.html" %}
 
-{% block title %}Каталог товаров{% endblock %}
+{% block title %}Каталог товаров - Clean Store{% endblock %}
 
 {% block content %}
-<h2>Каталог товаров</h2>
+<!-- Заголовок секции -->
+<section class="page-header">
+    <h1 class="hero-title">Эксклюзивные коллекции</h1>
+    <p class="hero-subtitle">
+        Откройте для себя мир роскошной косметики премиум класса
+    </p>
+</section>
 
-<div class="categories-grid">
-    {% for category in categories %}
-        <div class="category-card">
-            <a href="{% url 'appProducts:subcategory_list' category.slug %}">
-                {% if category.image %}
-                    <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
-                {% else %}
-                    <div class="category-placeholder">🧽</div>
-                {% endif %}
-                <h3>{{ category.title }}</h3>
-            </a>
+<!-- Сетка категорий -->
+<section class="categories-section">
+    <div class="cards-grid">
+        {% for category in categories %}
+            <article class="product-card category-card">
+                <a href="{% url 'appProducts:subcategory_list' category.slug %}" class="category-link">
+                    <!-- Изображение категории -->
+                    <div class="product-image-container">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" 
+                                 alt="{{ category.title }}" 
+                                 class="product-image category-image">
+                        {% else %}
+                            <div class="category-placeholder">
+                                <span class="placeholder-icon">✨</span>
+                                <span class="placeholder-text">{{ category.title }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Overlay эффект -->
+                        <div class="image-overlay">
+                            <span class="view-text">Посмотреть коллекцию</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Информация о категории -->
+                    <div class="product-info">
+                        <h3 class="product-title">{{ category.title }}</h3>
+                        {% if category.description %}
+                            <p class="product-description">{{ category.description|truncatewords:15 }}</p>
+                        {% endif %}
+                        
+                        <!-- Количество подкатегорий -->
+                        <div class="category-stats">
+                            <span class="stats-item">
+                                {{ category.subcategories.count }} 
+                                {% if category.subcategories.count == 1 %}
+                                    коллекция
+                                {% elif category.subcategories.count <= 4 %}
+                                    коллекции
+                                {% else %}
+                                    коллекций
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <!-- Кнопка перехода -->
+                        <div class="card-action">
+                            <span class="btn btn-secondary">Исследовать</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Категории временно недоступны</h3>
+                <p>Мы работаем над обновлением каталога. Попробуйте позже.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Преимущества магазина -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Почему выбирают Clean Store</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Премиум качество</h3>
+                <p>Только проверенные бренды и эксклюзивные продукты</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚚</div>
+                <h3>Быстрая доставка</h3>
+                <p>Доставим ваш заказ в кратчайшие сроки</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h3>Эксклюзивность</h3>
+                <p>Уникальные продукты, которых нет в обычных магазинах</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Гарантия качества</h3>
+                <p>100% гарантия подлинности всех товаров</p>
+            </div>
         </div>
-    {% empty %}
-        <p>Категории временно недоступны.</p>
-    {% endfor %}
-</div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 2rem 0;
+}
+
+.categories-section {
+    margin-bottom: 5rem;
+}
+
+.category-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.category-placeholder {
+    height: 100%;
+    background: var(--gradient-gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--velvet-midnight);
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.placeholder-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 11, 46, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .image-overlay {
+    opacity: 1;
+}
+
+.view-text {
+    color: var(--velvet-pearl);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.category-stats {
+    margin: 1rem 0;
+    color: var(--velvet-burgundy);
+    font-weight: 500;
+}
+
+.card-action {
+    margin-top: 1.5rem;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--velvet-pearl);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.features-section {
+    background: rgba(248, 246, 240, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 5rem 0;
+    margin-top: 5rem;
+}
+
+.section-title {
+    font-family: var(--font-primary);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--velvet-pearl);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(248, 246, 240, 0.9);
+    border-radius: 20px;
+    color: var(--velvet-midnight);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-family: var(--font-primary);
+    color: var(--velvet-deep-purple);
+    margin-bottom: 1rem;
+}
+</style>
 {% endblock %}

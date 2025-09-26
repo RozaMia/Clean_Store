@@ -1,74 +1,555 @@
+/* ===== PREMIUM VELVET DESIGN - ЭЛИТНЫЙ ДИЗАЙН ===== */
+
+/* Импорт роскошных шрифтов */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+
+/* CSS Custom Properties - Бильярдная палитра */
+:root {
+  /* Элитные зеленые цвета бильярда */
+  --billiard-forest: #0B4D2C;      /* Глубокий лесной */
+  --billiard-emerald: #228B22;     /* Изумрудный */  
+  --billiard-dark: #0A2F1B;        /* Темно-зеленый */
+  --billiard-gold: #FFD700;        /* Золото для акцентов */
+  --billiard-silver: #C0C0C0;      /* Серебро */
+  --billiard-cream: #F5F5DC;       /* Кремовый */
+  
+  /* Бильярдные градиенты */
+  --gradient-primary: linear-gradient(135deg, #0B4D2C 0%, #228B22 50%, #0A2F1B 100%);
+  --gradient-gold: linear-gradient(135deg, #FFD700 0%, #DAA520 100%);
+  --gradient-card: linear-gradient(145deg, #F5F5DC 0%, #E6E6D4 100%);
+  --gradient-hover: linear-gradient(135deg, #146B39 0%, #32CD32 50%, #0F3A20 100%);
+  
+  /* Бильярдные тени */
+  --shadow-soft: 0 8px 32px rgba(11, 77, 44, 0.15);
+  --shadow-medium: 0 12px 48px rgba(34, 139, 34, 0.2);
+  --shadow-strong: 0 20px 64px rgba(10, 47, 27, 0.3);
+  --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.4);
+  
+  /* Шрифты */
+  --font-primary: 'Playfair Display', serif;
+  --font-secondary: 'Inter', sans-serif;
+  --font-accent: 'Cormorant Garamond', serif;
+}
+
+/* Глобальные стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f9f9f9;
+  font-family: var(--font-secondary);
+  background: var(--gradient-primary);
+  background-attachment: fixed;
+  color: var(--billiard-cream);
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
+/* Анимированный бильярдный фон */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(192, 192, 192, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(34, 139, 34, 0.1) 0%, transparent 70%),
+    var(--gradient-primary);
+  z-index: -1;
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.05) rotate(0.5deg); }
+}
+
+/* Контейнер */
 .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
 }
 
+/* HEADER - Бильярдная шапка */
 .header {
-    background: #4CAF50;
-    color: white;
-    padding: 1rem 0;
+  background: rgba(10, 47, 27, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
-.header a {
-    color: white;
-    text-decoration: none;
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
 }
 
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+.logo {
+  font-family: var(--font-primary);
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.product-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-gold);
+  transition: width 0.3s ease;
 }
 
+.logo:hover::after {
+  width: 100%;
+}
+
+/* Навигация */
+.nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--billiard-cream);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-gold);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.nav-link:hover {
+  color: var(--billiard-dark);
+  transform: translateY(-2px);
+}
+
+.nav-link:hover::before {
+  left: 0;
+}
+
+/* Cart Icon */
+.cart-icon {
+  position: relative;
+  background: var(--gradient-gold);
+  color: var(--billiard-dark);
+  padding: 0.75rem;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-glow);
+}
+
+.cart-icon:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: var(--shadow-strong);
+}
+
+/* MAIN CONTENT */
+.main {
+  min-height: 100vh;
+  padding: 3rem 0;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 5rem 0;
+  position: relative;
+}
+
+.hero-title {
+  font-family: var(--font-primary);
+  font-size: 4rem;
+  font-weight: 800;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+  font-family: var(--font-accent);
+  font-size: 1.5rem;
+  color: var(--billiard-silver);
+  margin-bottom: 3rem;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* Кнопки */
 .btn {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  font-size: 1rem;
 }
 
-.btn:hover {
-    background: #45a049;
+.btn-primary {
+  background: var(--gradient-gold);
+  color: var(--velvet-midnight);
+  box-shadow: var(--shadow-medium);
 }
 
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-strong);
+  color: var(--billiard-dark);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--billiard-cream);
+  border: 2px solid var(--billiard-gold);
+}
+
+.btn-secondary:hover {
+  background: var(--gradient-gold);
+  color: var(--billiard-dark);
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin: 3rem 0;
+}
+
+/* Product Cards - Премиум дизайн */
+.product-card {
+  background: rgba(248, 246, 240, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.4s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-gold);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-strong);
+}
+
+.product-card:hover::before {
+  opacity: 0.1;
+}
+
+.product-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-info {
+  padding: 2rem;
+  color: var(--billiard-dark);
+}
+
+.product-title {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--billiard-forest);
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--billiard-emerald);
+  margin-bottom: 1rem;
+}
+
+.product-description {
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Badges */
 .badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: bold;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  z-index: 10;
 }
-.badge.new { background: #4CAF50; }
-.badge.hit { background: #FF9800; }
-.badge.sale { background: #F44336; }
 
-.btn {
-    display: inline-block;
-    padding: 8px 16px;
-    background: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin: 5px 0;
+.badge.new { 
+  background: linear-gradient(135deg, #00C851, #007E33);
 }
-.btn:hover { background: #45a049; }
+
+.badge.hit { 
+  background: linear-gradient(135deg, #FF8800, #FF6600);
+}
+
+.badge.sale { 
+  background: linear-gradient(135deg, #FF4444, #CC0000);
+}
+
+/* Table Styles */
+.table-container {
+  background: rgba(248, 246, 240, 0.95);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow-medium);
+  backdrop-filter: blur(10px);
+  margin: 2rem 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--billiard-dark);
+}
+
+th, td {
+  padding: 1.5rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(11, 77, 44, 0.1);
+}
+
+th {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  color: var(--billiard-forest);
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* Forms */
+.form-container {
+  background: rgba(248, 246, 240, 0.95);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: var(--shadow-medium);
+  backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--billiard-forest);
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid rgba(11, 77, 44, 0.2);
+  border-radius: 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--billiard-dark);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--billiard-gold);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Messages */
+.messages {
+  position: fixed;
+  top: 100px;
+  right: 2rem;
+  z-index: 1100;
+  max-width: 400px;
+}
+
+.message {
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  border-radius: 15px;
+  box-shadow: var(--shadow-medium);
+  backdrop-filter: blur(10px);
+  animation: slideInRight 0.5s ease;
+}
+
+.message.success {
+  background: rgba(0, 200, 81, 0.9);
+  color: white;
+}
+
+.message.error {
+  background: rgba(255, 68, 68, 0.9);
+  color: white;
+}
+
+.message.warning {
+  background: rgba(255, 136, 0, 0.9);
+  color: white;
+}
+
+/* Footer */
+.footer {
+  background: rgba(10, 47, 27, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 215, 0, 0.3);
+  padding: 3rem 0;
+  text-align: center;
+  color: var(--billiard-cream);
+}
+
+.footer-content {
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .nav {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .product-card {
+    margin: 0 -1rem;
+  }
+  
+  .form-container {
+    margin: 2rem -1rem;
+    border-radius: 0;
+  }
+}

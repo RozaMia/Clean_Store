@@ -1,44 +1,451 @@
 {% extends "base.html" %}
 {% load custom_filters %}
-{% block title %}Корзина{% endblock %}
+
+{% block title %}Корзина покупок - Clean Store{% endblock %}
+
 {% block content %}
-<h1>Ваша корзина</h1>
-<a href="{% url 'appProducts:category_list' %}">← К каталогу</a>
+<!-- Заголовок страницы -->
+<section class="page-header">
+    <h1 class="hero-title">Корзина покупок</h1>
+    <p class="hero-subtitle">Ваши избранные товары премиум класса</p>
+    
+    <div class="breadcrumb">
+        <a href="{% url 'appProducts:category_list' %}" class="breadcrumb-link">
+            ← Продолжить покупки
+        </a>
+    </div>
+</section>
 
 {% if cart_items %}
-    <table>
-        <thead>
-            <tr>
-                <th>Товар</th>
-                <th>Количество</th>
-                <th>Цена</th>
-                <th>Итого</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+    <!-- Корзина с товарами -->
+    <div class="cart-container">
+        <!-- Список товаров -->
+        <div class="cart-items">
             {% for item in cart_items %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>
-                    <form method="post" action="{% url 'appProducts:update_cart' item.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width:60px">
-                        <button type="submit">Обновить</button>
-                    </form>
-                </td>
-                <td>{{ item.product.price }}</td>
-                <td>{% cart_item_total item %} ₽</td>
-                <td>
-                    <a href="{% url 'appProducts:remove_from_cart' item.id %}" class="btn btn-danger">Удалить</a>
-                </td>
-            </tr>
+                <article class="cart-item">
+                    <!-- Изображение товара -->
+                    <div class="item-image">
+                        {% if item.product.main_image %}
+                            <img src="{{ item.product.main_image.url }}" 
+                                 alt="{{ item.product.name }}"
+                                 class="product-image">
+                        {% else %}
+                            <div class="image-placeholder">
+                                <span>✨</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Информация о товаре -->
+                    <div class="item-info">
+                        <h3 class="item-title">{{ item.product.name }}</h3>
+                        <p class="item-category">{{ item.product.subcategory.category.title }} → {{ item.product.subcategory.title }}</p>
+                        <div class="item-price">{{ item.product.price }}</div>
+                    </div>
+                    
+                    <!-- Управление количеством -->
+                    <div class="item-controls">
+                        <form method="post" action="{% url 'appProducts:update_cart' item.id %}" class="quantity-form">
+                            {% csrf_token %}
+                            <div class="quantity-control">
+                                <label for="quantity_{{ item.id }}" class="sr-only">Количество</label>
+                                <input type="number" 
+                                       id="quantity_{{ item.id }}"
+                                       name="quantity" 
+                                       value="{{ item.quantity }}" 
+                                       min="1" 
+                                       max="99"
+                                       class="quantity-input">
+                                <button type="submit" class="btn btn-secondary btn-sm">
+                                    Обновить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Итого за позицию -->
+                    <div class="item-total">
+                        <div class="total-amount">{% cart_item_total item %} ₽</div>
+                        <a href="{% url 'appProducts:remove_from_cart' item.id %}" 
+                           class="remove-btn"
+                           title="Удалить товар"
+                           onclick="return confirm('Удалить товар из корзины?')">
+                            🗑️
+                        </a>
+                    </div>
+                </article>
             {% endfor %}
-        </tbody>
-    </table>
-    <h3>Итого: {{ total }} ₽</h3>
-    <a href="{% url 'appProducts:checkout' %}" class="btn">Оформить заказ</a>
+        </div>
+        
+        <!-- Итоговая информация -->
+        <aside class="cart-summary">
+            <div class="summary-card">
+                <h2 class="summary-title">Итого к оплате</h2>
+                
+                <div class="summary-line">
+                    <span>Товары ({{ cart_items|length }})</span>
+                    <span>{{ total }} ₽</span>
+                </div>
+                
+                <div class="summary-line">
+                    <span>Доставка</span>
+                    <span class="free">Бесплатно</span>
+                </div>
+                
+                <hr class="summary-divider">
+                
+                <div class="summary-total">
+                    <span>Общая сумма</span>
+                    <span class="total-price">{{ total }} ₽</span>
+                </div>
+                
+                <!-- Кнопка оформления заказа -->
+                <a href="{% url 'appProducts:checkout' %}" class="btn btn-primary btn-large">
+                    ✨ Оформить заказ
+                </a>
+                
+                <!-- Дополнительная информация -->
+                <div class="cart-benefits">
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🚚</span>
+                        <span>Бесплатная доставка</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🔒</span>
+                        <span>Безопасная оплата</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">↩️</span>
+                        <span>Легкий возврат</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
 {% else %}
-    <p>Корзина пуста.</p>
+    <!-- Пустая корзина -->
+    <div class="empty-cart">
+        <div class="empty-cart-content">
+            <div class="empty-icon">🛒</div>
+            <h2>Ваша корзина пуста</h2>
+            <p>Добавьте товары из нашей эксклюзивной коллекции</p>
+            <a href="{% url 'appProducts:category_list' %}" class="btn btn-primary">
+                Исследовать каталог
+            </a>
+        </div>
+    </div>
 {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+}
+
+.breadcrumb {
+    margin-top: 2rem;
+}
+
+.breadcrumb-link {
+    color: var(--velvet-rose-gold);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    color: var(--velvet-gold);
+}
+
+.cart-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cart-item {
+    background: rgba(248, 246, 240, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 120px 1fr auto auto;
+    gap: 2rem;
+    align-items: center;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s ease;
+}
+
+.cart-item:hover {
+    transform: translateY(-2px);
+}
+
+.item-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.item-image .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--velvet-midnight);
+}
+
+.item-info {
+    color: var(--velvet-midnight);
+}
+
+.item-title {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--velvet-deep-purple);
+    margin-bottom: 0.5rem;
+}
+
+.item-category {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.item-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--velvet-burgundy);
+}
+
+.quantity-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-input {
+    width: 80px;
+    padding: 0.75rem;
+    border: 2px solid rgba(124, 29, 58, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    background: white;
+    color: var(--velvet-midnight);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.item-total {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.total-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--velvet-burgundy);
+}
+
+.remove-btn {
+    color: #dc3545;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background: rgba(220, 53, 69, 0.1);
+    transform: scale(1.1);
+}
+
+.cart-summary {
+    position: sticky;
+    top: 120px;
+    height: fit-content;
+}
+
+.summary-card {
+    background: rgba(248, 246, 240, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-medium);
+    backdrop-filter: blur(10px);
+}
+
+.summary-title {
+    font-family: var(--font-primary);
+    color: var(--velvet-deep-purple);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    color: var(--velvet-midnight);
+}
+
+.free {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.summary-divider {
+    border: none;
+    height: 1px;
+    background: rgba(124, 29, 58, 0.2);
+    margin: 1.5rem 0;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--velvet-deep-purple);
+    margin-bottom: 2rem;
+}
+
+.total-price {
+    color: var(--velvet-burgundy);
+}
+
+.btn-large {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.cart-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--velvet-midnight);
+    font-size: 0.9rem;
+}
+
+.benefit-icon {
+    font-size: 1.2rem;
+}
+
+.empty-cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+}
+
+.empty-cart-content {
+    text-align: center;
+    color: var(--velvet-pearl);
+}
+
+.empty-icon {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+    opacity: 0.7;
+}
+
+.empty-cart h2 {
+    font-family: var(--font-primary);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.empty-cart p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--velvet-rose-gold);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 968px) {
+    .cart-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .cart-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .item-total {
+        align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        padding: 1.5rem;
+    }
+    
+    .item-image {
+        width: 100px;
+        height: 100px;
+        justify-self: center;
+    }
+    
+    .summary-card {
+        position: static;
+    }
+}
+</style>
 {% endblock %}
