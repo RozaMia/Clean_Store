@@ -1,24 +1,169 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Каталог товаров{% endblock %}
+{% block title %}Каталог товаров — Clean Store{% endblock %}
 
 {% block content %}
-<h2>Каталог товаров</h2>
+<div class="catalog-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Главная</a>
+            <span class="breadcrumb-separator">→</span>
+            <span class="breadcrumb-current">Каталог</span>
+        </nav>
 
-<div class="categories-grid">
-    {% for category in categories %}
-        <div class="category-card">
-            <a href="{% url 'appProducts:subcategory_list' category.slug %}">
-                {% if category.image %}
-                    <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
-                {% else %}
-                    <div class="category-placeholder">🧽</div>
-                {% endif %}
-                <h3>{{ category.title }}</h3>
-            </a>
+        <!-- Заголовок страницы -->
+        <div class="page-header">
+            <h1 class="page-title">Каталог товаров</h1>
+            <p class="page-subtitle">Выберите категорию для просмотра товаров</p>
         </div>
-    {% empty %}
-        <p>Категории временно недоступны.</p>
-    {% endfor %}
+
+        <!-- Результаты поиска -->
+        {% if search_query %}
+        <div class="search-results-section">
+            <div class="search-results-header">
+                <h2>Результаты поиска: "{{ search_query }}"</h2>
+                <p>Найдено товаров: {{ search_count }}</p>
+            </div>
+            
+            {% if search_results %}
+                <div class="search-products-grid">
+                    {% for product in search_results %}
+                        <div class="product-card search-result">
+                            <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-link">
+                                <div class="product-image">
+                                    {% if product.main_image %}
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                                    {% else %}
+                                        <div class="image-placeholder">📦</div>
+                                    {% endif %}
+                                    {% if product.is_new %}
+                                        <div class="product-badge new">NEW</div>
+                                    {% endif %}
+                                    {% if product.is_hit %}
+                                        <div class="product-badge hit">ХИТ</div>
+                                    {% endif %}
+                                    {% if product.is_sale %}
+                                        <div class="product-badge sale">СКИДКА</div>
+                                    {% endif %}
+                                </div>
+                                <div class="product-info">
+                                    <h4 class="product-name">{{ product.name }}</h4>
+                                    <p class="product-category">{{ product.subcategory.category.title }} → {{ product.subcategory.title }}</p>
+                                    <div class="product-price">{{ product.price }}</div>
+                                </div>
+                            </a>
+                            <div class="product-actions">
+                                {% if user.is_authenticated %}
+                                    <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}" class="add-to-cart-form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            🛒 В корзину
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">
+                                        Войти для покупки
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <div class="no-results-icon">🔍</div>
+                    <h3>Ничего не найдено</h3>
+                    <p>Попробуйте изменить поисковый запрос</p>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Категории -->
+        <section class="catalog-categories">
+            <div class="categories-grid">
+                {% for category in categories %}
+                    <div class="category-card catalog-card">
+                        <a href="{% url 'appProducts:subcategory_list' category.slug %}" class="category-link-full">
+                            <div class="category-image-container">
+                                {% if category.image %}
+                                    <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
+                                {% else %}
+                                    <div class="category-placeholder">
+                                        {% if 'красота' in category.title|lower %}🧴
+                                        {% elif 'дом' in category.title|lower %}🏠
+                                        {% elif 'посуда' in category.title|lower %}🍽️
+                                        {% elif 'хоз' in category.title|lower %}🧽
+                                        {% elif 'одежда' in category.title|lower %}👕
+                                        {% elif 'творчество' in category.title|lower %}🎨
+                                        {% else %}📦{% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="category-content">
+                                <h3 class="category-title">{{ category.title }}</h3>
+                                {% if category.description %}
+                                    <p class="category-description">{{ category.description|truncatewords:10 }}</p>
+                                {% endif %}
+                                <div class="category-meta">
+                                    <span class="subcategories-count">
+                                        {{ category.subcategories.count }} подкатегорий
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h3>Категории временно недоступны</h3>
+                        <p>Мы работаем над наполнением каталога. Попробуйте зайти позже.</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary">На главную</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Популярные товары -->
+        <section class="popular-products">
+            <h2 class="section-title">Популярные товары</h2>
+            <div class="products-grid">
+                <!-- Здесь можно добавить популярные товары -->
+                <div class="product-placeholder">
+                    <div class="placeholder-icon">🔥</div>
+                    <p>Популярные товары появятся здесь</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Преимущества -->
+        <section class="catalog-features">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Быстрая доставка</h3>
+                    <p>Доставим заказ в течение 1-3 дней</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Выгодные цены</h3>
+                    <p>Лучшие цены на рынке</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Гарантия качества</h3>
+                    <p>Только проверенные товары</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Легкий возврат</h3>
+                    <p>Вернем деньги в течение 14 дней</p>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 {% endblock %}

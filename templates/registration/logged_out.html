@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Выход из системы — Clean Store{% endblock %}
+
+{% block content %}
+<div class="logout-page">
+    <div class="container">
+        <div class="logout-content">
+            <div class="logout-card">
+                <div class="logout-icon">👋</div>
+                <h1>До свидания!</h1>
+                <p>Вы успешно вышли из системы.</p>
+                <p>Спасибо за использование Clean Store!</p>
+                
+                <div class="logout-actions">
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                        🏠 На главную
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary">
+                        🔐 Войти снова
+                    </a>
+                </div>
+                
+                <div class="logout-info">
+                    <h3>Что дальше?</h3>
+                    <ul>
+                        <li>🛍️ Продолжайте просматривать товары</li>
+                        <li>📋 Изучите наш каталог</li>
+                        <li>📞 Свяжитесь с нами при необходимости</li>
+                        <li>🔐 Войдите снова для совершения покупок</li>
+                    </ul>
+                </div>
+                
+                <div class="logout-features">
+                    <div class="feature">
+                        <span class="feature-icon">🚚</span>
+                        <span>Быстрая доставка</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">💰</span>
+                        <span>Выгодные цены</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🔄</span>
+                        <span>Легкий возврат</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

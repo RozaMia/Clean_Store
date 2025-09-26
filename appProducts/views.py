@@ -13,19 +13,41 @@ from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
-@cache_page(60 * 15)  # Кэшируем на 15 минут
 def category_list(request):
-    """Главная страница: список всех активных категорий"""
-    categories = Category.objects.filter(is_active=True).prefetch_related(
-        Prefetch(
-            'subcategories',
-            queryset=Subcategory.objects.filter(is_active=True)
-        )
-    ).order_by('title')
+    """Главная страница: список всех активных категорий + поиск"""
+    search_query = request.GET.get('search', '').strip()
     
-    return render(request, 'appProducts/category_list.html', {
-        'categories': categories
-    })
+    if search_query:
+        # Поиск по товарам
+        products = Product.objects.filter(
+            name__icontains=search_query,
+            is_active=True
+        ).select_related('subcategory__category').prefetch_related('images')[:20]
+        
+        categories = Category.objects.filter(is_active=True).prefetch_related(
+            Prefetch(
+                'subcategories',
+                queryset=Subcategory.objects.filter(is_active=True)
+            )
+        ).order_by('title')
+        
+        return render(request, 'appProducts/category_list.html', {
+            'categories': categories,
+            'search_query': search_query,
+            'search_results': products,
+            'search_count': products.count()
+        })
+    else:
+        categories = Category.objects.filter(is_active=True).prefetch_related(
+            Prefetch(
+                'subcategories',
+                queryset=Subcategory.objects.filter(is_active=True)
+            )
+        ).order_by('title')
+        
+        return render(request, 'appProducts/category_list.html', {
+            'categories': categories
+        })
 
 def subcategory_list(request, category_slug):
     """Список подкатегорий в выбранной категории"""
@@ -86,7 +108,6 @@ def product_detail(request, category_slug, subcategory_slug, product_slug):
         'extra_images': extra_images
     })
 
-@cache_page(60 * 30)  # Кэшируем на 30 минут
 def home_view(request):
     """Главная страница с оптимизированными запросами"""
     new_products = Product.objects.filter(

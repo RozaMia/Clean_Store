@@ -1,46 +1,187 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ product.name }}{% endblock %}
+{% block title %}{{ product.name }} — Clean Store{% endblock %}
 
 {% block content %}
-<nav class="breadcrumb">
-    <a href="{% url 'appProducts:category_list' %}">Каталог</a> →
-    <a href="{% url 'appProducts:subcategory_list' product.subcategory.category.slug %}">
-        {{ product.subcategory.category.title }}
-    </a> →
-    <a href="{% url 'appProducts:product_list' product.subcategory.category.slug product.subcategory.slug %}">
-        {{ product.subcategory.title }}
-    </a> →
-    <span>{{ product.name }}</span>
-</nav>
+<div class="product-detail-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Главная</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:category_list' %}" class="breadcrumb-link">Каталог</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:subcategory_list' product.subcategory.category.slug %}" class="breadcrumb-link">
+                {{ product.subcategory.category.title }}
+            </a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:product_list' product.subcategory.category.slug product.subcategory.slug %}" class="breadcrumb-link">
+                {{ product.subcategory.title }}
+            </a>
+            <span class="breadcrumb-separator">→</span>
+            <span class="breadcrumb-current">{{ product.name }}</span>
+        </nav>
 
-<div class="product-detail">
-    <div class="product-images">
-        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-image">
-        {% if extra_images %}
-            <div class="extra-images">
-                {% for img in extra_images %}
-                    <img src="{{ img.image.url }}" alt="Доп. фото" class="extra-image">
-                {% endfor %}
+        <!-- Карточка товара -->
+        <div class="product-detail-card">
+            <div class="product-gallery">
+                <div class="main-image-container">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-image">
+                    {% else %}
+                        <div class="image-placeholder main">📦</div>
+                    {% endif %}
+                    
+                    <!-- Бейджи -->
+                    <div class="product-badges">
+                        {% if product.is_new %}
+                            <span class="badge new">NEW</span>
+                        {% endif %}
+                        {% if product.is_hit %}
+                            <span class="badge hit">ХИТ</span>
+                        {% endif %}
+                        {% if product.is_sale %}
+                            <span class="badge sale">СКИДКА</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Дополнительные фото -->
+                {% if extra_images %}
+                    <div class="extra-images">
+                        {% for img in extra_images %}
+                            <div class="extra-image-container">
+                                <img src="{{ img.image.url }}" alt="Дополнительное фото {{ forloop.counter }}" class="extra-image">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
-    </div>
 
-    <div class="product-info">
-        <h1>{{ product.name }}</h1>
-        <p class="price">{{ product.price }}</p>
-        <div class="description">
-            {{ product.description|default:"Описание отсутствует."|linebreaks }}
+            <div class="product-info">
+                <div class="product-header">
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    <div class="product-category">
+                        {{ product.subcategory.category.title }} → {{ product.subcategory.title }}
+                    </div>
+                </div>
+
+                <div class="product-price-section">
+                    <div class="price-main">{{ product.price }}</div>
+                    <div class="price-info">Цена за единицу товара</div>
+                </div>
+
+                <div class="product-description">
+                    <h3>Описание товара</h3>
+                    <div class="description-content">
+                        {{ product.description|default:"Подробное описание товара появится здесь."|linebreaks }}
+                    </div>
+                </div>
+
+                <div class="product-actions">
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}" class="add-to-cart-form">
+                            {% csrf_token %}
+                            <div class="quantity-selector">
+                                <label for="quantity">Количество:</label>
+                                <div class="quantity-controls">
+                                    <button type="button" class="qty-btn minus">-</button>
+                                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="100" class="qty-input">
+                                    <button type="button" class="qty-btn plus">+</button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg add-to-cart-btn">
+                                🛒 Добавить в корзину
+                            </button>
+                        </form>
+                        
+                        <div class="additional-actions">
+                            <button class="btn btn-secondary btn-outline" onclick="alert('Функция избранного в разработке')">
+                                ❤️ В избранное
+                            </button>
+                            <button class="btn btn-secondary btn-outline" onclick="alert('Функция сравнения в разработке')">
+                                ⚖️ Сравнить
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="login-prompt">
+                            <p>Для покупки товара необходимо войти в аккаунт</p>
+                            <div class="login-actions">
+                                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                                    👤 Войти в аккаунт
+                                </a>
+                                <a href="{% url 'register' %}" class="btn btn-secondary">
+                                    ✨ Регистрация
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Информация о доставке -->
+                <div class="delivery-info">
+                    <h3>Доставка и оплата</h3>
+                    <div class="delivery-options">
+                        <div class="delivery-option">
+                            <span class="delivery-icon">🚚</span>
+                            <div class="delivery-text">
+                                <strong>Быстрая доставка</strong>
+                                <p>1-3 дня по России</p>
+                            </div>
+                        </div>
+                        <div class="delivery-option">
+                            <span class="delivery-icon">💳</span>
+                            <div class="delivery-text">
+                                <strong>Удобная оплата</strong>
+                                <p>Карта, наличные, перевод</p>
+                            </div>
+                        </div>
+                        <div class="delivery-option">
+                            <span class="delivery-icon">🔄</span>
+                            <div class="delivery-text">
+                                <strong>Гарантия возврата</strong>
+                                <p>14 дней на возврат</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button class="btn">В корзину</button>
+
+        <!-- Похожие товары -->
+        <section class="related-products">
+            <h2 class="section-title">Похожие товары</h2>
+            <div class="related-placeholder">
+                <div class="placeholder-icon">🔍</div>
+                <p>Похожие товары появятся здесь</p>
+            </div>
+        </section>
     </div>
-    {% if user.is_authenticated %}
-            <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn">В корзину</button>
-            </form>
-        {% else %}
-            <p><a href="{% url 'login' %}">Войдите</a>, чтобы добавить в корзину</p>
-        {% endif %}
 </div>
+
+<!-- JavaScript для количества -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const qtyInput = document.getElementById('quantity');
+    const minusBtn = document.querySelector('.qty-btn.minus');
+    const plusBtn = document.querySelector('.qty-btn.plus');
+    
+    if (minusBtn && plusBtn && qtyInput) {
+        minusBtn.addEventListener('click', function() {
+            const currentValue = parseInt(qtyInput.value);
+            if (currentValue > 1) {
+                qtyInput.value = currentValue - 1;
+            }
+        });
+        
+        plusBtn.addEventListener('click', function() {
+            const currentValue = parseInt(qtyInput.value);
+            if (currentValue < 100) {
+                qtyInput.value = currentValue + 1;
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

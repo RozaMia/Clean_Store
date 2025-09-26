@@ -1,24 +1,100 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ category.title }}{% endblock %}
+{% block title %}{{ category.title }} — Clean Store{% endblock %}
 
 {% block content %}
-<nav class="breadcrumb">
-    <a href="{% url 'appProducts:category_list' %}">Каталог</a> →
-    <span>{{ category.title }}</span>
-</nav>
+<div class="subcategory-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Главная</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:category_list' %}" class="breadcrumb-link">Каталог</a>
+            <span class="breadcrumb-separator">→</span>
+            <span class="breadcrumb-current">{{ category.title }}</span>
+        </nav>
 
-<h2>{{ category.title }}</h2>
-
-<div class="subcategories-list">
-    {% for sub in subcategories %}
-        <div class="subcategory-item">
-            <a href="{% url 'appProducts:product_list' category.slug sub.slug %}">
-                {{ sub.title }}
-            </a>
+        <!-- Заголовок категории -->
+        <div class="category-header">
+            <div class="category-header-content">
+                <h1 class="category-title">{{ category.title }}</h1>
+                {% if category.description %}
+                    <p class="category-description">{{ category.description }}</p>
+                {% endif %}
+                <div class="category-meta">
+                    <span class="subcategory-count">{{ subcategories.count }} подкатегорий</span>
+                </div>
+            </div>
+            {% if category.image %}
+                <div class="category-image">
+                    <img src="{{ category.image.url }}" alt="{{ category.title }}">
+                </div>
+            {% else %}
+                <div class="category-image-placeholder">
+                    {% if 'красота' in category.title|lower %}🧴
+                    {% elif 'дом' in category.title|lower %}🏠
+                    {% elif 'посуда' in category.title|lower %}🍽️
+                    {% elif 'хоз' in category.title|lower %}🧽
+                    {% elif 'одежда' in category.title|lower %}👕
+                    {% elif 'творчество' in category.title|lower %}🎨
+                    {% else %}📦{% endif %}
+                </div>
+            {% endif %}
         </div>
-    {% empty %}
-        <p>Подкатегории отсутствуют.</p>
-    {% endfor %}
+
+        <!-- Подкатегории -->
+        <section class="subcategories-section">
+            <h2 class="section-title">Выберите подкатегорию</h2>
+            <div class="subcategories-grid">
+                {% for sub in subcategories %}
+                    <div class="subcategory-card">
+                        <a href="{% url 'appProducts:product_list' category.slug sub.slug %}" class="subcategory-link">
+                            <div class="subcategory-icon">
+                                {% if 'контейнер' in sub.title|lower %}🗂️
+                                {% elif 'сиз' in sub.title|lower %}🦺
+                                {% elif 'химия' in sub.title|lower %}🧪
+                                {% elif 'инвентарь' in sub.title|lower %}🧹
+                                {% elif 'средства' in sub.title|lower %}🧴
+                                {% elif 'урна' in sub.title|lower %}🗑️
+                                {% elif 'уборка' in sub.title|lower %}🧽
+                                {% else %}📋{% endif %}
+                            </div>
+                            <div class="subcategory-content">
+                                <h3 class="subcategory-name">{{ sub.title }}</h3>
+                                {% if sub.description %}
+                                    <p class="subcategory-description">{{ sub.description|truncatewords:8 }}</p>
+                                {% endif %}
+                                <div class="subcategory-arrow">→</div>
+                            </div>
+                        </a>
+                    </div>
+                {% empty %}
+                    <div class="empty-subcategories">
+                        <div class="empty-icon">📂</div>
+                        <h3>Подкатегории пока отсутствуют</h3>
+                        <p>Мы работаем над наполнением этой категории</p>
+                        <a href="{% url 'appProducts:category_list' %}" class="btn btn-primary">
+                            Вернуться в каталог
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Популярные товары в категории -->
+        <section class="category-products">
+            <h2 class="section-title">Популярные товары в категории</h2>
+            <div class="products-preview">
+                <div class="products-placeholder">
+                    <div class="placeholder-icon">🔥</div>
+                    <p>Здесь будут показаны популярные товары</p>
+                    <a href="{% url 'appProducts:category_list' %}" class="btn btn-secondary">
+                        Смотреть все товары
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 {% endblock %}
