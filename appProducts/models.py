@@ -3,17 +3,26 @@ from django.utils.text import slugify
 from djmoney.models.fields import MoneyField
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from .validators import (
+    validate_image_size,
+    validate_image_extension,
+    validate_quantity,
+    validate_positive_price,
+    phone_validator
+)
 
 class Category(models.Model):
     title = models.CharField(
         verbose_name='Название категории',
         max_length=255,
-        unique=True
+        unique=True,
+        db_index=True
     )
     slug = models.SlugField(
         verbose_name='Slug',
         unique=True,
-        blank=True
+        blank=True,
+        db_index=True
     )
     description = models.TextField(
         verbose_name='Описание',
@@ -24,17 +33,18 @@ class Category(models.Model):
         verbose_name='Обложка категории',
         upload_to='categories/',
         blank=True,
-        null=True
+        null=True,
+        validators=[validate_image_size, validate_image_extension]
     )
     is_active = models.BooleanField(
         verbose_name='Активна',
         default=True
     )
-    create_at = models.DateTimeField(
+    created_at = models.DateTimeField(
         verbose_name='Дата создания',
         auto_now_add=True
     )
-    update_at = models.DateTimeField(
+    updated_at = models.DateTimeField(
         verbose_name='Дата изменения',
         auto_now=True
     )
@@ -51,6 +61,10 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "категории"
         ordering = ['title']
+        indexes = [
+            models.Index(fields=['is_active', 'title']),
+            models.Index(fields=['created_at']),
+        ]
 
 
 class Subcategory(models.Model):
@@ -73,11 +87,11 @@ class Subcategory(models.Model):
         verbose_name='Активна',
         default=True
     )
-    create_at = models.DateTimeField(
+    created_at = models.DateTimeField(
         verbose_name='Дата создания',
         auto_now_add=True
     )
-    update_at = models.DateTimeField(
+    updated_at = models.DateTimeField(
         verbose_name='Дата изменения',
         auto_now=True
     )
@@ -117,7 +131,8 @@ class Product(models.Model):
     )
     main_image = models.ImageField(
         verbose_name='Загрузите фото продукта',
-        upload_to='main/'
+        upload_to='main/',
+        validators=[validate_image_size, validate_image_extension]
     )
     price = MoneyField(
         verbose_name='Цена',
@@ -130,11 +145,11 @@ class Product(models.Model):
         default=True,
         help_text='Снимите галочку, чтобы скрыть товар из магазина'
     )
-    create_at = models.DateTimeField(
+    created_at = models.DateTimeField(
         verbose_name='Дата создания',
         auto_now_add=True
     )
-    update_at = models.DateTimeField(
+    updated_at = models.DateTimeField(
         verbose_name='Дата изменения',
         auto_now=True
     )
@@ -153,13 +168,13 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Товар для продажи"
         verbose_name_plural = "товары для продажи"
-        ordering = ['-create_at']
+        ordering = ['-created_at']
         indexes = [
             models.Index(fields=['is_active', 'is_new']),
             models.Index(fields=['subcategory', 'is_active']),
             models.Index(fields=['is_hit', 'is_active']),
             models.Index(fields=['is_sale', 'is_active']),
-            models.Index(fields=['-create_at']),
+            models.Index(fields=['-created_at']),
         ]
 
 
@@ -172,7 +187,8 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(
         upload_to='extra/',
-        verbose_name='Изображение'
+        verbose_name='Изображение',
+        validators=[validate_image_size, validate_image_extension]
     )
 
     def __str__(self):
@@ -185,7 +201,11 @@ class ProductImage(models.Model):
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
-    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    quantity = models.PositiveIntegerField(
+        default=1, 
+        verbose_name='Количество',
+        validators=[validate_quantity]
+    )
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -202,12 +222,6 @@ class Order(models.Model):
         ('cancelled', 'Отменён'),
     ]
     
-    # Валидатор для телефона
-    phone_validator = RegexValidator(
-        regex=r'^\+?1?\d{9,15}$',
-        message="Номер телефона должен быть в формате: '+999999999'. До 15 цифр разрешено."
-    )
-
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Пользователь")
     first_name = models.CharField("Имя", max_length=100)
     last_name = models.CharField("Фамилия", max_length=100)

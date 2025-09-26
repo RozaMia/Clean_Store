@@ -16,8 +16,8 @@ class SubcategoryInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(ModelAdmin):
-    list_display = ['title', 'slug', 'is_active', 'create_at']
-    list_filter = ['is_active']
+    list_display = ['title', 'slug', 'is_active', 'created_at']
+    list_filter = ['is_active', 'created_at']
     search_fields = ['title', 'description']
     prepopulated_fields = {'slug': ('title',)}
     inlines = [SubcategoryInline]
@@ -26,7 +26,7 @@ class CategoryAdmin(ModelAdmin):
             'fields': ('title', 'slug', 'description', 'image', 'is_active')
         }),
     )
-    ordering = ['-create_at']
+    ordering = ['-created_at']
 
     # Переопределяем change_view, чтобы показать вкладки "General" и "Подкатегории"
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -43,11 +43,11 @@ class CategoryAdmin(ModelAdmin):
 
 @admin.register(Subcategory)
 class SubcategoryAdmin(ModelAdmin):
-    list_display = ['title', 'category', 'is_active', 'create_at']
-    list_filter = ['category', 'is_active']
+    list_display = ['title', 'category', 'is_active', 'created_at']
+    list_filter = ['category', 'is_active', 'created_at']
     search_fields = ['title', 'category__title']
     prepopulated_fields = {'slug': ('title',)}
-    ordering = ['-create_at']
+    ordering = ['-created_at']
 
     # Добавим ссылку "Назад к категории"
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -61,15 +61,15 @@ class SubcategoryAdmin(ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
-    list_display = ['name', 'subcategory', 'price', 'is_active', 'create_at']
+    list_display = ['name', 'subcategory', 'price', 'is_active', 'created_at']
     list_display_links = ['name']
     list_editable = ['price', 'is_active']
-    list_filter = ['subcategory__category', 'subcategory', 'is_active', 'create_at']
+    list_filter = ['subcategory__category', 'subcategory', 'is_active', 'created_at', 'is_new', 'is_hit', 'is_sale']
     search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductImageInline]
-    exclude = ['create_at', 'update_at']
-    ordering = ['-create_at']
+    exclude = ['created_at', 'updated_at']
+    ordering = ['-created_at']
 
     # Показываем поле subcategory вместо category
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

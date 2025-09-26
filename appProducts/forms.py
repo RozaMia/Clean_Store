@@ -1,14 +1,9 @@
 from django import forms
-from django.core.validators import RegexValidator
+from .validators import phone_validator
 
 
 class OrderForm(forms.Form):
     """Форма для оформления заказа"""
-    
-    phone_validator = RegexValidator(
-        regex=r'^\+?1?\d{9,15}$',
-        message="Номер телефона должен быть в формате: '+999999999'. До 15 цифр разрешено."
-    )
     
     first_name = forms.CharField(
         max_length=100, 
