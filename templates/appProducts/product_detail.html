@@ -24,154 +24,346 @@
         </nav>
 
         <!-- Карточка товара -->
-        <div class="product-detail-card">
-            <div class="product-gallery">
-                <div class="main-image-container">
-                    {% if product.main_image %}
-                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-image">
-                    {% else %}
-                        <div class="image-placeholder main">🧽</div>
-                    {% endif %}
-                    
-                    <!-- Бейджи -->
-                    <div class="product-badges">
-                        {% if product.is_new %}
-                            <span class="badge new">NEW</span>
-                        {% endif %}
-                        {% if product.is_hit %}
-                            <span class="badge hit">ХИТ</span>
-                        {% endif %}
-                        {% if product.is_sale %}
-                            <span class="badge sale">СКИДКА</span>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <!-- Дополнительные фото -->
-                {% if extra_images %}
-                    <div class="extra-images">
-                        {% for img in extra_images %}
-                            <div class="extra-image-container">
-                                <img src="{{ img.image.url }}" alt="Дополнительное фото {{ forloop.counter }}" class="extra-image">
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="product-info">
-                <div class="product-header">
-                    <h1 class="product-title">{{ product.name }}</h1>
-                    <div class="product-category">
-                        {{ product.subcategory.category.title }} → {{ product.subcategory.title }}
-                    </div>
-                </div>
-
-                <div class="product-price-section">
-                    <div class="price-main">{{ product.price }}</div>
-                    <div class="price-info">Цена за единицу товара</div>
-                </div>
-
-                <div class="product-description">
-                    <h3>Описание товара</h3>
-                    <div class="description-content">
-                        {{ product.description|default:"Подробное описание товара появится здесь."|linebreaks }}
-                    </div>
-                </div>
-
-                <div class="product-actions">
-                    {% if user.is_authenticated %}
-                        <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}" class="add-to-cart-form">
-                            {% csrf_token %}
-                            <div class="quantity-selector">
-                                <label for="quantity">Количество:</label>
-                                <div class="quantity-controls">
-                                    <button type="button" class="qty-btn minus">-</button>
-                                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="100" class="qty-input">
-                                    <button type="button" class="qty-btn plus">+</button>
+        <div class="product-detail-hero">
+            <div class="product-hero-content">
+                <div class="product-gallery-section">
+                    <div class="main-image-container">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-product-image">
+                        {% else %}
+                            <div class="product-image-placeholder">
+                                <span class="placeholder-emoji">🧽</span>
+                                <div class="placeholder-text">
+                                    Изображение товара
+                                    <br><small>скоро появится</small>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg add-to-cart-btn">
-                                🛒 Добавить в корзину
-                            </button>
-                        </form>
+                        {% endif %}
                         
-                        <div class="additional-actions">
-                            <button class="btn btn-secondary btn-outline" onclick="alert('Функция избранного в разработке')">
-                                ❤️ В избранное
-                            </button>
-                            <button class="btn btn-secondary btn-outline" onclick="alert('Функция сравнения в разработке')">
-                                ⚖️ Сравнить
-                            </button>
+                        <!-- Стильные бейджи -->
+                        <div class="product-status-badges">
+                            {% if product.is_new %}
+                                <span class="status-badge new">
+                                    <span class="badge-icon">✨</span>
+                                    <span class="badge-text">Новинка</span>
+                                </span>
+                            {% endif %}
+                            {% if product.is_hit %}
+                                <span class="status-badge hit">
+                                    <span class="badge-icon">🔥</span>
+                                    <span class="badge-text">Хит</span>
+                                </span>
+                            {% endif %}
+                            {% if product.is_sale %}
+                                <span class="status-badge sale">
+                                    <span class="badge-icon">💰</span>
+                                    <span class="badge-text">Скидка</span>
+                                </span>
+                            {% endif %}
                         </div>
-                    {% else %}
-                        <div class="login-prompt">
-                            <p>Для покупки товара необходимо войти в аккаунт</p>
-                            <div class="login-actions">
-                                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
-                                    👤 Войти в аккаунт
-                                </a>
-                                <a href="{% url 'register' %}" class="btn btn-secondary">
-                                    ✨ Регистрация
-                                </a>
+                    </div>
+                    
+                    <!-- Галерея дополнительных фото -->
+                    {% if extra_images %}
+                        <div class="product-gallery-thumbnails">
+                            <h4>Дополнительные фото</h4>
+                            <div class="thumbnails-grid">
+                                {% for img in extra_images %}
+                                    <div class="thumbnail-item">
+                                        <img src="{{ img.image.url }}" alt="Фото {{ forloop.counter }}" class="thumbnail-image">
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                     {% endif %}
                 </div>
 
-                <!-- Информация о доставке -->
-                <div class="delivery-info">
-                    <h3>Доставка и оплата</h3>
-                    <div class="delivery-options">
-                        <div class="delivery-option">
-                            <span class="delivery-icon">🚚</span>
-                            <div class="delivery-text">
-                                <strong>Быстрая доставка</strong>
-                                <p>1-3 дня по России</p>
+                <div class="product-info-section">
+                    <div class="product-header-modern">
+                        <div class="product-category-path">
+                            <span class="category-link">{{ product.subcategory.category.title }}</span>
+                            <span class="path-separator">→</span>
+                            <span class="subcategory-link">{{ product.subcategory.title }}</span>
+                        </div>
+                        <h1 class="product-title-modern">{{ product.name }}</h1>
+                    </div>
+
+                    <div class="product-price-card">
+                        <div class="price-container">
+                            <div class="price-main-new">{{ product.price }}</div>
+                            <div class="price-details">
+                                <span class="price-label">Цена за единицу</span>
+                                <span class="price-available">✅ В наличии</span>
                             </div>
                         </div>
-                        <div class="delivery-option">
-                            <span class="delivery-icon">💳</span>
-                            <div class="delivery-text">
-                                <strong>Удобная оплата</strong>
-                                <p>Карта, наличные, перевод</p>
-                            </div>
+                    </div>
+
+                    <div class="product-description-modern">
+                        <div class="description-header">
+                            <h3>📋 Описание товара</h3>
                         </div>
-                        <div class="delivery-option">
-                            <span class="delivery-icon">🔄</span>
-                            <div class="delivery-text">
-                                <strong>Гарантия возврата</strong>
-                                <p>14 дней на возврат</p>
-                            </div>
+                        <div class="description-content-modern">
+                            {{ product.description|default:"Подробное описание товара появится здесь. Мы работаем над добавлением детальной информации о каждом товаре."|linebreaks }}
                         </div>
+                    </div>
+
+                    <div class="product-actions-modern">
+                        {% if user.is_authenticated %}
+                            <div class="purchase-section">
+                                <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}" class="modern-cart-form">
+                                    {% csrf_token %}
+                                    <div class="quantity-section">
+                                        <label class="quantity-label">
+                                            <span class="label-icon">📦</span>
+                                            <span class="label-text">Количество</span>
+                                        </label>
+                                        <div class="quantity-controls-modern">
+                                            <button type="button" class="qty-btn-modern minus" aria-label="Уменьшить количество">
+                                                <span>−</span>
+                                            </button>
+                                            <input type="number" name="quantity" id="quantity" value="1" min="1" max="100" class="qty-input-modern">
+                                            <button type="button" class="qty-btn-modern plus" aria-label="Увеличить количество">
+                                                <span>+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="add-to-cart-btn-modern">
+                                        <span class="btn-icon">🛒</span>
+                                        <span class="btn-text">Добавить в корзину</span>
+                                        <span class="btn-accent">→</span>
+                                    </button>
+                                </form>
+                                
+                                <div class="secondary-actions">
+                                    <button class="action-btn wishlist" onclick="alert('Функция избранного в разработке')" title="Добавить в избранное">
+                                        <span class="action-icon">❤️</span>
+                                        <span class="action-text">В избранное</span>
+                                    </button>
+                                    <button class="action-btn compare" onclick="alert('Функция сравнения в разработке')" title="Добавить к сравнению">
+                                        <span class="action-icon">⚖️</span>
+                                        <span class="action-text">Сравнить</span>
+                                    </button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="auth-prompt-modern">
+                                <div class="prompt-header">
+                                    <h4>🔐 Требуется авторизация</h4>
+                                    <p>Войдите в аккаунт, чтобы добавить товар в корзину</p>
+                                </div>
+                                <div class="auth-actions">
+                                    <a href="{% url 'login' %}" class="auth-btn primary">
+                                        <span class="btn-icon">👤</span>
+                                        <span class="btn-text">Войти</span>
+                                    </a>
+                                    <a href="{% url 'register' %}" class="auth-btn secondary">
+                                        <span class="btn-icon">✨</span>
+                                        <span class="btn-text">Регистрация</span>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Информация о доставке и гарантиях -->
+        <section class="service-info-section">
+            <div class="service-header">
+                <h2>🚀 Сервис и доставка</h2>
+                <p>Мы заботимся о вашем удобстве</p>
+            </div>
+            <div class="service-cards">
+                <div class="service-card">
+                    <div class="service-icon">🚚</div>
+                    <div class="service-content">
+                        <h4>Быстрая доставка</h4>
+                        <p>1-3 дня по всей России</p>
+                        <span class="service-detail">От 300 ₽ или бесплатно от 2000 ₽</span>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💳</div>
+                    <div class="service-content">
+                        <h4>Удобная оплата</h4>
+                        <p>Любым удобным способом</p>
+                        <span class="service-detail">Карта, наличные, онлайн перевод</span>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔄</div>
+                    <div class="service-content">
+                        <h4>Гарантия возврата</h4>
+                        <p>14 дней на возврат товара</p>
+                        <span class="service-detail">Без лишних вопросов</span>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <div class="service-content">
+                        <h4>Качество товара</h4>
+                        <p>Проверяем каждый товар</p>
+                        <span class="service-detail">Только сертифицированные товары</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Похожие товары -->
-        <section class="related-products">
-            <h2 class="section-title">Похожие товары</h2>
-            <div class="related-placeholder">
-                <div class="placeholder-icon">🔍</div>
-                <p>Похожие товары появятся здесь</p>
+        <section class="related-products-modern">
+            <div class="related-header">
+                <h2>💡 Похожие товары</h2>
+                <p>Товары из той же категории, которые могут вас заинтересовать</p>
+            </div>
+            
+            <div class="related-products-grid">
+                <!-- Моковые данные похожих товаров -->
+                <div class="related-product-card" data-product-id="101">
+                    <div class="related-product-image">
+                        <div class="product-image-placeholder">
+                            <span class="placeholder-emoji">🧽</span>
+                        </div>
+                        <div class="related-product-badges">
+                            <span class="related-badge hit">🔥 ХИТ</span>
+                        </div>
+                        <div class="related-product-actions">
+                            <button class="related-action-btn wishlist" onclick="toggleWishlist(101, this)" title="В избранное">❤️</button>
+                            <button class="related-action-btn compare" onclick="toggleCompare(101, this)" title="Сравнить">⚖️</button>
+                        </div>
+                    </div>
+                    <div class="related-product-info">
+                        <h4 class="related-product-name">Профессиональная губка для мытья посуды</h4>
+                        <p class="related-product-category">{{ product.subcategory.title }}</p>
+                        <div class="related-product-price">299 ₽</div>
+                        <div class="related-product-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <span class="rating-count">(24)</span>
+                        </div>
+                        <a href="#" class="related-product-link">
+                            <span class="link-text">Подробнее</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="related-product-card" data-product-id="102">
+                    <div class="related-product-image">
+                        <div class="product-image-placeholder">
+                            <span class="placeholder-emoji">🧴</span>
+                        </div>
+                        <div class="related-product-badges">
+                            <span class="related-badge new">✨ НОВИНКА</span>
+                        </div>
+                        <div class="related-product-actions">
+                            <button class="related-action-btn wishlist" onclick="toggleWishlist(102, this)" title="В избранное">❤️</button>
+                            <button class="related-action-btn compare" onclick="toggleCompare(102, this)" title="Сравнить">⚖️</button>
+                        </div>
+                    </div>
+                    <div class="related-product-info">
+                        <h4 class="related-product-name">Концентрированное средство для уборки</h4>
+                        <p class="related-product-category">{{ product.subcategory.title }}</p>
+                        <div class="related-product-price">450 ₽</div>
+                        <div class="related-product-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <span class="rating-count">(18)</span>
+                        </div>
+                        <a href="#" class="related-product-link">
+                            <span class="link-text">Подробнее</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="related-product-card" data-product-id="103">
+                    <div class="related-product-image">
+                        <div class="product-image-placeholder">
+                            <span class="placeholder-emoji">🧹</span>
+                        </div>
+                        <div class="related-product-badges">
+                            <span class="related-badge sale">💰 СКИДКА</span>
+                        </div>
+                        <div class="related-product-actions">
+                            <button class="related-action-btn wishlist" onclick="toggleWishlist(103, this)" title="В избранное">❤️</button>
+                            <button class="related-action-btn compare" onclick="toggleCompare(103, this)" title="Сравнить">⚖️</button>
+                        </div>
+                    </div>
+                    <div class="related-product-info">
+                        <h4 class="related-product-name">Швабра с микрофиброй для идеальной уборки</h4>
+                        <p class="related-product-category">{{ product.subcategory.title }}</p>
+                        <div class="related-product-price">
+                            <span class="price-old">890 ₽</span>
+                            <span class="price-current">690 ₽</span>
+                        </div>
+                        <div class="related-product-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐</div>
+                            <span class="rating-count">(12)</span>
+                        </div>
+                        <a href="#" class="related-product-link">
+                            <span class="link-text">Подробнее</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="related-product-card" data-product-id="104">
+                    <div class="related-product-image">
+                        <div class="product-image-placeholder">
+                            <span class="placeholder-emoji">🧤</span>
+                        </div>
+                        <div class="related-product-actions">
+                            <button class="related-action-btn wishlist" onclick="toggleWishlist(104, this)" title="В избранное">❤️</button>
+                            <button class="related-action-btn compare" onclick="toggleCompare(104, this)" title="Сравнить">⚖️</button>
+                        </div>
+                    </div>
+                    <div class="related-product-info">
+                        <h4 class="related-product-name">Перчатки для уборки повышенной прочности</h4>
+                        <p class="related-product-category">{{ product.subcategory.title }}</p>
+                        <div class="related-product-price">150 ₽</div>
+                        <div class="related-product-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <span class="rating-count">(31)</span>
+                        </div>
+                        <a href="#" class="related-product-link">
+                            <span class="link-text">Подробнее</span>
+                            <span class="link-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="related-footer">
+                <a href="{% url 'appProducts:product_list' product.subcategory.category.slug product.subcategory.slug %}" class="view-all-related">
+                    <span class="view-all-text">Смотреть все товары в категории</span>
+                    <span class="view-all-arrow">→</span>
+                </a>
             </div>
         </section>
     </div>
 </div>
 
-<!-- JavaScript для количества -->
+<!-- Модернизированный JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Quantity controls
     const qtyInput = document.getElementById('quantity');
-    const minusBtn = document.querySelector('.qty-btn.minus');
-    const plusBtn = document.querySelector('.qty-btn.plus');
+    const minusBtn = document.querySelector('.qty-btn-modern.minus');
+    const plusBtn = document.querySelector('.qty-btn-modern.plus');
     
     if (minusBtn && plusBtn && qtyInput) {
+        // Анимация для кнопок
+        function animateButton(btn) {
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 100);
+        }
+        
         minusBtn.addEventListener('click', function() {
             const currentValue = parseInt(qtyInput.value);
             if (currentValue > 1) {
                 qtyInput.value = currentValue - 1;
+                animateButton(this);
             }
         });
         
@@ -179,7 +371,30 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentValue = parseInt(qtyInput.value);
             if (currentValue < 100) {
                 qtyInput.value = currentValue + 1;
+                animateButton(this);
             }
+        });
+        
+        // Валидация ввода
+        qtyInput.addEventListener('input', function() {
+            let value = parseInt(this.value);
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            } else if (value > 100) {
+                this.value = 100;
+            }
+        });
+    }
+    
+    // Анимация для загрузки
+    const loadingDots = document.querySelectorAll('.loading-dot');
+    if (loadingDots.length > 0) {
+        loadingDots.forEach((dot, index) => {
+            setTimeout(() => {
+                setInterval(() => {
+                    dot.style.opacity = dot.style.opacity === '0.3' ? '1' : '0.3';
+                }, 800);
+            }, index * 200);
         });
     }
 });

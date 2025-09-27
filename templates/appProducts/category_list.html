@@ -30,30 +30,49 @@
             {% if search_results %}
                 <div class="search-products-grid">
                     {% for product in search_results %}
-                        <div class="product-card search-result">
-                            <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-link">
-                                <div class="product-image">
+                        <div class="product-card catalog-card">
+                            <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="category-link-full">
+                                <div class="category-image-container">
                                     {% if product.main_image %}
-                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="category-image">
                                     {% else %}
-                                        <div class="image-placeholder">🧹</div>
+                                        <div class="category-placeholder">
+                                            <span class="placeholder-emoji">🧹</span>
+                                            <div class="placeholder-text">
+                                                Нет изображения
+                                                <br><small>товара</small>
+                                            </div>
+                                        </div>
                                     {% endif %}
-                                    {% if product.is_new %}
-                                        <div class="product-badge new">NEW</div>
-                                    {% endif %}
-                                    {% if product.is_hit %}
-                                        <div class="product-badge hit">ХИТ</div>
-                                    {% endif %}
-                                    {% if product.is_sale %}
-                                        <div class="product-badge sale">СКИДКА</div>
-                                    {% endif %}
+                                    
+                                    <!-- Бейджи -->
+                                    <div class="product-badges">
+                                        {% if product.is_new %}
+                                            <span class="product-badge new">Новинка</span>
+                                        {% endif %}
+                                        {% if product.is_hit %}
+                                            <span class="product-badge hit">Хит</span>
+                                        {% endif %}
+                                        {% if product.is_sale %}
+                                            <span class="product-badge sale">Скидка</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                <div class="product-info">
-                                    <h4 class="product-name">{{ product.name }}</h4>
-                                    <p class="product-category">{{ product.subcategory.category.title }} → {{ product.subcategory.title }}</p>
-                                    <div class="product-price">{{ product.price }}</div>
+                                
+                                <div class="category-content">
+                                    <h3 class="category-title">{{ product.name }}</h3>
+                                    <p class="category-description">{{ product.subcategory.category.title }} → {{ product.subcategory.title }}</p>
+                                    <div class="category-meta">
+                                        <div class="product-price">{{ product.price }}</div>
+                                        <div class="category-action">
+                                            <span class="category-btn">
+                                                Подробнее →
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </a>
+                            
                             <div class="product-actions">
                                 {% if user.is_authenticated %}
                                     <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}" class="add-to-cart-form">

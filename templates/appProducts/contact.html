@@ -153,16 +153,127 @@
             </div>
         </div>
 
-        <!-- Карта -->
-        <div class="map-section">
-            <h2>🗺️ Мы на карте</h2>
-            <div class="map-container">
-                <div class="map-placeholder">
-                    <div class="map-icon">🗺️</div>
-                    <h3>Наш офис в Москве</h3>
-                    <p>ул. Чистая, д. 10</p>
-                    <p>м. Чистые Пруды</p>
-                    <p class="map-note">В продакшене здесь будет интерактивная карта</p>
+        <!-- Интерактивная карта -->
+        <div class="map-section-modern">
+            <div class="map-header">
+                <h2>🗺️ Наше местоположение</h2>
+                <p>Приезжайте к нам в гости или закажите доставку</p>
+            </div>
+            
+            <div class="map-content">
+                <div class="map-sidebar">
+                    <div class="location-card">
+                        <div class="location-header">
+                            <div class="location-icon">🏢</div>
+                            <div class="location-info">
+                                <h3>Clean Store</h3>
+                                <p>Главный офис</p>
+                            </div>
+                        </div>
+                        
+                        <div class="location-details">
+                            <div class="detail-item">
+                                <span class="detail-icon">📍</span>
+                                <div class="detail-content">
+                                    <strong>Адрес</strong>
+                                    <p>г. Москва, ул. Чистая, д. 10, стр. 1</p>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-icon">🚇</span>
+                                <div class="detail-content">
+                                    <strong>Метро</strong>
+                                    <p>Чистые Пруды (3 мин пешком)</p>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-icon">🕒</span>
+                                <div class="detail-content">
+                                    <strong>Режим работы</strong>
+                                    <p>Пн-Пт: 9:00-18:00<br>Сб-Вс: 10:00-16:00</p>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-icon">📞</span>
+                                <div class="detail-content">
+                                    <strong>Телефон</strong>
+                                    <a href="tel:+74957777777">+7 (495) 777-77-77</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="location-actions">
+                            <button class="map-action-btn route" onclick="buildRoute()">
+                                <span class="btn-icon">🧭</span>
+                                <span class="btn-text">Построить маршрут</span>
+                            </button>
+                            <button class="map-action-btn share" onclick="shareLocation()">
+                                <span class="btn-icon">📤</span>
+                                <span class="btn-text">Поделиться</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-container-modern">
+                    <div class="interactive-map" id="interactiveMap">
+                        <!-- Здесь будет Yandex карта -->
+                        <div class="map-loading">
+                            <div class="loading-spinner"></div>
+                            <p>Загружаем карту...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="map-controls">
+                        <button class="map-control-btn" onclick="centerMap()" title="Центрировать">🎯</button>
+                        <button class="map-control-btn" onclick="toggleSatellite()" title="Спутник">🛰️</button>
+                        <button class="map-control-btn" onclick="toggleTraffic()" title="Пробки">🚗</button>
+                        <button class="map-control-btn" onclick="toggleFullscreen()" title="Полный экран">⛶</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="delivery-zones">
+                <h3>🚛 Зоны доставки</h3>
+                <div class="zones-grid">
+                    <div class="zone-card express">
+                        <div class="zone-header">
+                            <span class="zone-icon">⚡</span>
+                            <h4>Экспресс-доставка</h4>
+                        </div>
+                        <div class="zone-content">
+                            <p><strong>В течение 2-4 часов</strong></p>
+                            <p>В пределах МКАД</p>
+                            <div class="zone-price">От 300 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="zone-card standard">
+                        <div class="zone-header">
+                            <span class="zone-icon">🚚</span>
+                            <h4>Стандартная доставка</h4>
+                        </div>
+                        <div class="zone-content">
+                            <p><strong>1-2 дня</strong></p>
+                            <p>Москва и МО</p>
+                            <div class="zone-price">От 150 ₽</div>
+                        </div>
+                    </div>
+                    
+                    <div class="zone-card regions">
+                        <div class="zone-header">
+                            <span class="zone-icon">📦</span>
+                            <h4>По России</h4>
+                        </div>
+                        <div class="zone-content">
+                            <p><strong>3-7 дней</strong></p>
+                            <p>Все регионы РФ</p>
+                            <div class="zone-price">От 250 ₽</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -195,4 +306,202 @@
         </div>
     </div>
 </div>
+
+<!-- Yandex Maps API -->
+<script src="https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU" type="text/javascript"></script>
+
+<!-- JavaScript для интерактивной карты -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Симуляция загрузки карты
+    setTimeout(initMap, 1000);
+});
+
+let map;
+let placemark;
+let isTrafficEnabled = false;
+let isSatelliteEnabled = false;
+
+function initMap() {
+    const mapContainer = document.getElementById('interactiveMap');
+    const loadingElement = mapContainer.querySelector('.map-loading');
+    
+    // Создаем mock карту (в реальном проекте здесь будет Yandex Maps)
+    loadingElement.innerHTML = `
+        <div class="mock-map">
+            <div class="map-marker">
+                <div class="marker-pin">📍</div>
+                <div class="marker-info">
+                    <h4>Clean Store</h4>
+                    <p>ул. Чистая, д. 10</p>
+                </div>
+            </div>
+            <div class="map-streets">
+                <div class="street street-1"></div>
+                <div class="street street-2"></div>
+                <div class="street street-3"></div>
+            </div>
+            <div class="map-buildings">
+                <div class="building building-1"></div>
+                <div class="building building-2"></div>
+                <div class="building building-3"></div>
+            </div>
+            <div class="map-zoom">
+                <button class="zoom-btn" onclick="zoomIn()">+</button>
+                <button class="zoom-btn" onclick="zoomOut()">−</button>
+            </div>
+        </div>
+    `;
+    
+    // В реальном проекте:
+    // ymaps.ready(() => {
+    //     map = new ymaps.Map('interactiveMap', {
+    //         center: [55.764946, 37.632137], // Чистые Пруды
+    //         zoom: 16
+    //     });
+    //     
+    //     placemark = new ymaps.Placemark([55.764946, 37.632137], {
+    //         balloonContent: 'Clean Store<br>ул. Чистая, д. 10'
+    //     });
+    //     
+    //     map.geoObjects.add(placemark);
+    // });
+}
+
+function centerMap() {
+    showNotification('Карта центрирована на нашем офисе', 'info');
+    // В реальном проекте: map.setCenter([55.764946, 37.632137]);
+}
+
+function toggleSatellite() {
+    isSatelliteEnabled = !isSatelliteEnabled;
+    const btn = event.target;
+    
+    if (isSatelliteEnabled) {
+        btn.style.background = 'var(--color-primary)';
+        btn.style.color = 'var(--color-white)';
+        showNotification('Включен спутниковый режим', 'info');
+    } else {
+        btn.style.background = 'rgba(255, 255, 255, 0.9)';
+        btn.style.color = 'var(--color-gray-700)';
+        showNotification('Выключен спутниковый режим', 'info');
+    }
+    
+    // В реальном проекте: map.setType(isSatelliteEnabled ? 'yandex#satellite' : 'yandex#map');
+}
+
+function toggleTraffic() {
+    isTrafficEnabled = !isTrafficEnabled;
+    const btn = event.target;
+    
+    if (isTrafficEnabled) {
+        btn.style.background = 'var(--color-accent)';
+        btn.style.color = 'var(--color-white)';
+        showNotification('Включен слой пробок', 'info');
+    } else {
+        btn.style.background = 'rgba(255, 255, 255, 0.9)';
+        btn.style.color = 'var(--color-gray-700)';
+        showNotification('Выключен слой пробок', 'info');
+    }
+    
+    // В реальном проекте:
+    // if (isTrafficEnabled) {
+    //     const trafficControl = new ymaps.control.TrafficControl();
+    //     map.controls.add(trafficControl);
+    // }
+}
+
+function toggleFullscreen() {
+    const mapContainer = document.querySelector('.map-container-modern');
+    
+    if (!document.fullscreenElement) {
+        mapContainer.requestFullscreen().then(() => {
+            showNotification('Карта в полноэкранном режиме', 'info');
+        });
+    } else {
+        document.exitFullscreen().then(() => {
+            showNotification('Выход из полноэкранного режима', 'info');
+        });
+    }
+}
+
+function buildRoute() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                showNotification('Строим маршрут до вашего местоположения...', 'info');
+                // В реальном проекте здесь будет построение маршрута
+            },
+            error => {
+                showNotification('Для построения маршрута разрешите доступ к геолокации', 'warning');
+            }
+        );
+    } else {
+        showNotification('Ваш браузер не поддерживает геолокацию', 'warning');
+    }
+}
+
+function shareLocation() {
+    const locationData = {
+        title: 'Clean Store',
+        text: 'Адрес магазина Clean Store',
+        url: 'https://yandex.ru/maps/?text=55.764946,37.632137'
+    };
+    
+    if (navigator.share) {
+        navigator.share(locationData).then(() => {
+            showNotification('Адрес успешно отправлен!', 'success');
+        });
+    } else {
+        // Fallback для браузеров без Web Share API
+        navigator.clipboard.writeText('Clean Store: ул. Чистая, д. 10, Москва').then(() => {
+            showNotification('Адрес скопирован в буфер обмена!', 'success');
+        });
+    }
+}
+
+function zoomIn() {
+    showNotification('Увеличиваем масштаб', 'info');
+    // В реальном проекте: map.setZoom(map.getZoom() + 1);
+}
+
+function zoomOut() {
+    showNotification('Уменьшаем масштаб', 'info');
+    // В реальном проекте: map.setZoom(map.getZoom() - 1);
+}
+
+// Функция показа уведомлений (если не определена в других местах)
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        border-left: 4px solid ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+        font-weight: 500;
+        max-width: 300px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+</script>
 {% endblock %}

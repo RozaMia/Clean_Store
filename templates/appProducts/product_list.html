@@ -46,26 +46,58 @@
             {% endif %}
         </div>
 
-        <!-- Фильтры -->
-        <section class="filters-section">
-            <h2 class="section-title">Фильтры</h2>
-            <div class="filters-grid">
-                <a href="." class="filter-btn {% if not request.GET.tag %}active{% endif %}">
-                    <span class="filter-icon">🔍</span>
-                    Все товары
-                </a>
-                <a href="?tag=new" class="filter-btn {% if request.GET.tag == 'new' %}active{% endif %}">
-                    <span class="filter-icon">✨</span>
-                    Новинки
-                </a>
-                <a href="?tag=hit" class="filter-btn {% if request.GET.tag == 'hit' %}active{% endif %}">
-                    <span class="filter-icon">🔥</span>
-                    Хиты продаж
-                </a>
-                <a href="?tag=sale" class="filter-btn {% if request.GET.tag == 'sale' %}active{% endif %}">
-                    <span class="filter-icon">💰</span>
-                    Распродажа
-                </a>
+        <!-- Модернизированные фильтры -->
+        <section class="filters-section-modern">
+            <div class="filters-header">
+                <h2 class="filters-title">🎯 Фильтры товаров</h2>
+                <p class="filters-subtitle">Найдите именно то, что вам нужно</p>
+            </div>
+            <div class="filters-container">
+                <div class="filter-group">
+                    <h3 class="filter-group-title">По популярности</h3>
+                    <div class="filter-buttons">
+                        <a href="." class="filter-btn-modern {% if not request.GET.tag %}active{% endif %}">
+                            <div class="filter-icon-container">
+                                <span class="filter-icon">🔍</span>
+                            </div>
+                            <div class="filter-content">
+                                <span class="filter-title">Все товары</span>
+                                <span class="filter-description">Полный каталог</span>
+                            </div>
+                            <div class="filter-count">{{ page_obj.paginator.count }}</div>
+                        </a>
+                        <a href="?tag=new" class="filter-btn-modern {% if request.GET.tag == 'new' %}active{% endif %}">
+                            <div class="filter-icon-container new">
+                                <span class="filter-icon">✨</span>
+                            </div>
+                            <div class="filter-content">
+                                <span class="filter-title">Новинки</span>
+                                <span class="filter-description">Последние поступления</span>
+                            </div>
+                            <div class="filter-count">{% with new_count=products|length %}{{ new_count }}{% endwith %}</div>
+                        </a>
+                        <a href="?tag=hit" class="filter-btn-modern {% if request.GET.tag == 'hit' %}active{% endif %}">
+                            <div class="filter-icon-container hit">
+                                <span class="filter-icon">🔥</span>
+                            </div>
+                            <div class="filter-content">
+                                <span class="filter-title">Хиты продаж</span>
+                                <span class="filter-description">Самые популярные</span>
+                            </div>
+                            <div class="filter-count">{% with hit_count=products|length %}{{ hit_count }}{% endwith %}</div>
+                        </a>
+                        <a href="?tag=sale" class="filter-btn-modern {% if request.GET.tag == 'sale' %}active{% endif %}">
+                            <div class="filter-icon-container sale">
+                                <span class="filter-icon">💰</span>
+                            </div>
+                            <div class="filter-content">
+                                <span class="filter-title">Распродажа</span>
+                                <span class="filter-description">Выгодные предложения</span>
+                            </div>
+                            <div class="filter-count">{% with sale_count=products|length %}{{ sale_count }}{% endwith %}</div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -78,7 +110,7 @@
             
             <div class="products-grid">
                 {% for product in page_obj %}
-                    <div class="product-card catalog-card">
+                    <div class="product-card catalog-card" data-product-id="{{ product.id }}">
                         <a href="{% url 'appProducts:product_detail' category.slug subcategory.slug product.slug %}" class="category-link-full">
                             <div class="category-image-container">
                                 {% if product.main_image %}
@@ -112,9 +144,7 @@
                                     <p class="category-description">{{ product.description|truncatewords:8 }}</p>
                                 {% endif %}
                                 <div class="category-meta">
-                                    <span class="product-price">
-                                        {{ product.price|floatformat:0 }} ₽
-                                    </span>
+                                    <div class="product-price">{{ product.price }}</div>
                                     <div class="category-action">
                                         <span class="category-btn">
                                             Подробнее →
@@ -123,6 +153,25 @@
                                 </div>
                             </div>
                         </a>
+                        
+                        <!-- Действия с товаром -->
+                        <div class="product-card-actions">
+                            <button class="action-btn-card wishlist" onclick="toggleWishlist({{ product.id }}, this)" title="Добавить в избранное">
+                                <span class="action-icon">❤️</span>
+                            </button>
+                            <button class="action-btn-card compare" onclick="toggleCompare({{ product.id }}, this)" title="Сравнить товар">
+                                <span class="action-icon">⚖️</span>
+                            </button>
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'appProducts:add_to_cart' product.id %}" class="quick-cart-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="action-btn-card cart" title="Быстро в корзину">
+                                        <span class="action-icon">🛒</span>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </div>
                 {% empty %}
                     <div class="empty-state">
@@ -167,4 +216,118 @@
         {% endif %}
     </div>
 </div>
+
+<!-- JavaScript для интерактивности -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация localStorage для избранного и сравнения
+    if (!localStorage.getItem('wishlist')) {
+        localStorage.setItem('wishlist', JSON.stringify([]));
+    }
+    if (!localStorage.getItem('compare')) {
+        localStorage.setItem('compare', JSON.stringify([]));
+    }
+    
+    // Обновляем состояние кнопок на странице
+    updateButtonStates();
+});
+
+// Функция переключения избранного
+function toggleWishlist(productId, button) {
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    const index = wishlist.indexOf(productId);
+    
+    if (index === -1) {
+        wishlist.push(productId);
+        button.classList.add('active');
+        showNotification('Товар добавлен в избранное! ❤️', 'success');
+    } else {
+        wishlist.splice(index, 1);
+        button.classList.remove('active');
+        showNotification('Товар удален из избранного', 'info');
+    }
+    
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    updateWishlistCount();
+}
+
+// Функция переключения сравнения
+function toggleCompare(productId, button) {
+    let compare = JSON.parse(localStorage.getItem('compare')) || [];
+    const index = compare.indexOf(productId);
+    
+    if (index === -1) {
+        if (compare.length >= 4) {
+            showNotification('Можно сравнивать не более 4 товаров', 'warning');
+            return;
+        }
+        compare.push(productId);
+        button.classList.add('active');
+        showNotification('Товар добавлен к сравнению! ⚖️', 'success');
+    } else {
+        compare.splice(index, 1);
+        button.classList.remove('active');
+        showNotification('Товар удален из сравнения', 'info');
+    }
+    
+    localStorage.setItem('compare', JSON.stringify(compare));
+    updateCompareCount();
+}
+
+
+// Обновить состояние кнопок
+function updateButtonStates() {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    const compare = JSON.parse(localStorage.getItem('compare')) || [];
+    
+    document.querySelectorAll('.wishlist').forEach(btn => {
+        const productCard = btn.closest('.product-card');
+        if (productCard) {
+            const productId = parseInt(productCard.dataset.productId);
+            if (wishlist.includes(productId)) {
+                btn.classList.add('active');
+            }
+        }
+    });
+    
+    document.querySelectorAll('.compare').forEach(btn => {
+        const productCard = btn.closest('.product-card');
+        if (productCard) {
+            const productId = parseInt(productCard.dataset.productId);
+            if (compare.includes(productId)) {
+                btn.classList.add('active');
+            }
+        }
+    });
+}
+
+// Показать уведомление
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Обновить счетчики
+function updateWishlistCount() {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    // Здесь можно обновить счетчик в шапке сайта
+}
+
+function updateCompareCount() {
+    const compare = JSON.parse(localStorage.getItem('compare')) || [];
+    // Здесь можно обновить счетчик в шапке сайта
+}
+</script>
 {% endblock %}
