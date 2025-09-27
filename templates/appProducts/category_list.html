@@ -93,13 +93,25 @@
                                     <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
                                 {% else %}
                                     <div class="category-placeholder">
-                                        {% if 'сбора' in category.title|lower or 'отход' in category.title|lower %}🗑️
-                                        {% elif 'сиз' in category.title|lower or 'защит' in category.title|lower %}🦺
-                                        {% elif 'химия' in category.title|lower or 'професс' in category.title|lower %}🧪
-                                        {% elif 'инвентарь' in category.title|lower or 'аксессуар' in category.title|lower %}🧹
-                                        {% elif 'стирк' in category.title|lower or 'бель' in category.title|lower %}🧺
-                                        {% elif 'уборк' in category.title|lower %}🧽
-                                        {% else %}🧹{% endif %}
+                                        {% if 'сбора' in category.title|lower or 'отход' in category.title|lower %}
+                                            <span class="placeholder-emoji">🗑️</span>
+                                        {% elif 'сиз' in category.title|lower or 'защит' in category.title|lower %}
+                                            <span class="placeholder-emoji">🦺</span>
+                                        {% elif 'химия' in category.title|lower or 'професс' in category.title|lower %}
+                                            <span class="placeholder-emoji">🧪</span>
+                                        {% elif 'инвентарь' in category.title|lower or 'аксессуар' in category.title|lower %}
+                                            <span class="placeholder-emoji">🧹</span>
+                                        {% elif 'стирк' in category.title|lower or 'бель' in category.title|lower %}
+                                            <span class="placeholder-emoji">🧺</span>
+                                        {% elif 'уборк' in category.title|lower %}
+                                            <span class="placeholder-emoji">🧽</span>
+                                        {% else %}
+                                            <span class="placeholder-emoji">🧹</span>
+                                        {% endif %}
+                                        <div class="placeholder-text">
+                                            Загрузите изображение<br>
+                                            <small>через админку</small>
+                                        </div>
                                     </div>
                                 {% endif %}
                             </div>
