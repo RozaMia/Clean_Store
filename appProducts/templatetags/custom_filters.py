@@ -26,10 +26,17 @@ def currency(value):
     """
     try:
         if hasattr(value, 'amount'):  # MoneyField
-            return f"{value.amount:,.2f} ₽"
-        return f"{float(value):,.2f} ₽"
+            amount = float(value.amount)
+        else:
+            amount = float(value)
+        
+        # Если число целое, не показываем десятичные знаки
+        if amount == int(amount):
+            return f"{int(amount):,} ₽".replace(',', ' ')
+        else:
+            return f"{amount:,.2f} ₽".replace(',', ' ')
     except (ValueError, TypeError):
-        return "0,00 ₽"
+        return "0 ₽"
 
 
 @register.filter
@@ -43,9 +50,13 @@ def get_total_price(cart_items):
             item.product.price.amount * item.quantity 
             for item in cart_items
         )
-        return f"{total:,.2f} ₽"
+        # Если число целое, не показываем десятичные знаки
+        if total == int(total):
+            return f"{int(total):,} ₽".replace(',', ' ')
+        else:
+            return f"{total:,.2f} ₽".replace(',', ' ')
     except (AttributeError, TypeError):
-        return "0,00 ₽"
+        return "0 ₽"
 
 
 @register.simple_tag

@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Sum, F, Prefetch
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods, require_POST
+from django.http import JsonResponse
 from .models import Category, Subcategory, Product, CartItem, Order, OrderItem, ContactMessage
 from .forms import OrderForm, ContactForm
 from django.contrib.auth.decorators import login_required
@@ -48,6 +49,71 @@ def category_list(request):
         return render(request, 'appProducts/category_list.html', {
             'categories': categories
         })
+
+
+def all_products(request):
+    """Страница всех товаров с фильтрацией и сортировкой"""
+    # Получаем параметры фильтрации
+    category_filter = request.GET.get('category', '')
+    subcategory_filter = request.GET.get('subcategory', '')
+    sort_by = request.GET.get('sort', 'name')
+    search_query = request.GET.get('search', '').strip()
+    
+    # Базовый queryset
+    products = Product.objects.filter(is_active=True).select_related(
+        'subcategory__category'
+    ).prefetch_related('images')
+    
+    # Применяем фильтры
+    if search_query:
+        products = products.filter(name__icontains=search_query)
+    
+    if category_filter:
+        products = products.filter(subcategory__category__slug=category_filter)
+    
+    if subcategory_filter:
+        products = products.filter(subcategory__slug=subcategory_filter)
+    
+    # Применяем сортировку
+    sort_options = {
+        'name': 'name',
+        'price_asc': 'price',
+        'price_desc': '-price',
+        'newest': '-created_at',
+        'popular': '-views_count',
+    }
+    
+    if sort_by in sort_options:
+        products = products.order_by(sort_options[sort_by])
+    else:
+        products = products.order_by('name')
+    
+    # Пагинация
+    paginator = Paginator(products, 24)  # 24 товара на страницу
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # Получаем категории и подкатегории для фильтров
+    categories = Category.objects.filter(is_active=True).order_by('title')
+    subcategories = Subcategory.objects.filter(is_active=True).order_by('title')
+    
+    # Если выбрана категория, показываем только её подкатегории
+    if category_filter:
+        subcategories = subcategories.filter(category__slug=category_filter)
+    
+    context = {
+        'page_obj': page_obj,
+        'products': page_obj,
+        'categories': categories,
+        'subcategories': subcategories,
+        'current_category': category_filter,
+        'current_subcategory': subcategory_filter,
+        'current_sort': sort_by,
+        'search_query': search_query,
+        'total_products': products.count(),
+    }
+    
+    return render(request, 'appProducts/all_products.html', context)
 
 def subcategory_list(request, category_slug):
     """Список подкатегорий в выбранной категории"""
@@ -204,34 +270,67 @@ def update_cart(request, item_id):
     try:
         cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
         
-        try:
+        # Получаем данные из POST или JSON
+        if request.headers.get('Content-Type') == 'application/json':
+            import json
+            data = json.loads(request.body)
+            quantity = int(data.get('quantity', 1))
+        else:
             quantity = int(request.POST.get('quantity', 1))
-        except (ValueError, TypeError):
-            messages.error(request, "Некорректное количество товара")
-            return redirect('appProducts:cart')
             
         if quantity > 0:
             if quantity > 100:
-                messages.error(request, "Максимальное количество: 100")
+                error_msg = "Максимальное количество: 100"
+                if request.headers.get('Content-Type') == 'application/json':
+                    return JsonResponse({'success': False, 'message': error_msg})
+                messages.error(request, error_msg)
             else:
                 cart_item.quantity = quantity
                 cart_item.save()
-                messages.success(request, "Количество товара обновлено")
+                success_msg = "Количество товара обновлено"
+                if request.headers.get('Content-Type') == 'application/json':
+                    return JsonResponse({'success': True, 'message': success_msg})
+                messages.success(request, success_msg)
         else:
             cart_item.delete()
-            messages.success(request, "Товар удален из корзины")
+            success_msg = "Товар удален из корзины"
+            if request.headers.get('Content-Type') == 'application/json':
+                return JsonResponse({'success': True, 'message': success_msg})
+            messages.success(request, success_msg)
             
+    except (ValueError, TypeError):
+        error_msg = "Некорректное количество товара"
+        if request.headers.get('Content-Type') == 'application/json':
+            return JsonResponse({'success': False, 'message': error_msg})
+        messages.error(request, error_msg)
     except Exception as e:
         logger.error(f"Ошибка при обновлении корзины: {e}")
-        messages.error(request, "Произошла ошибка при обновлении корзины")
+        error_msg = "Произошла ошибка при обновлении корзины"
+        if request.headers.get('Content-Type') == 'application/json':
+            return JsonResponse({'success': False, 'message': error_msg})
+        messages.error(request, error_msg)
     
+    # Обычный запрос - редирект
     return redirect('appProducts:cart')
 
 @login_required
+@require_POST
 def remove_from_cart(request, item_id):
-    cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
-    cart_item.delete()
-    return redirect('appProducts:cart')
+    try:
+        cart_item = get_object_or_404(CartItem, id=item_id, user=request.user)
+        cart_item.delete()
+        
+        # Если это AJAX запрос, возвращаем JSON
+        if request.headers.get('Content-Type') == 'application/json' or request.headers.get('Accept') == 'application/json':
+            return JsonResponse({'success': True, 'message': 'Товар удален из корзины'})
+        
+        # Обычный запрос - редирект
+        return redirect('appProducts:cart')
+    except Exception as e:
+        logger.error(f"Error removing item from cart: {e}")
+        if request.headers.get('Content-Type') == 'application/json' or request.headers.get('Accept') == 'application/json':
+            return JsonResponse({'success': False, 'message': 'Ошибка при удалении товара'})
+        return redirect('appProducts:cart')
 
 
 

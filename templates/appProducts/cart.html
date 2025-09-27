@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}Корзина — Clean Store{% endblock %}
 
@@ -63,7 +64,7 @@
                                     {% endif %}
                                     {% if item.product.is_sale %}
                                         <span class="item-badge sale">💰</span>
-                                    {% endif %}
+                                {% endif %}
                                 </div>
                             </div>
                             
@@ -94,10 +95,10 @@
                                 <div class="price-section">
                                     <div class="unit-price">
                                         <span class="price-label">Цена за единицу:</span>
-                                        <span class="price-value">{{ item.product.price }}</span>
+                                        <span class="price-value">{{ item.product.price|currency }}</span>
                                     </div>
-                                </div>
-                                
+                            </div>
+                            
                                 <div class="quantity-section-modern">
                                     <label class="quantity-label-modern">Количество:</label>
                                     <div class="quantity-controls-modern">
@@ -120,7 +121,7 @@
                                 <div class="total-section">
                                     <div class="total-price-modern">
                                         <span class="total-label-modern">Итого:</span>
-                                        <span class="total-value" id="total-{{ item.id }}">{% widthratio item.product.price.amount 1 item.quantity %} ₽</span>
+                                        <span class="total-value" id="total-{{ item.id }}">{{ item.product.price|multiply:item.quantity|currency }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +164,7 @@
                                     <span class="line-icon">💵</span>
                                     <span class="line-text">Стоимость товаров</span>
                                 </div>
-                                <span class="line-value" id="subtotal">{{ total }} ₽</span>
+                                <span class="line-value" id="subtotal">{{ total|currency }}</span>
                             </div>
                             
                             <div class="delivery-section">
@@ -177,8 +178,8 @@
                                 <div class="delivery-note">
                                     При заказе от 1000 ₽ доставка по Москве бесплатная
                                 </div>
-                            </div>
-                            
+                        </div>
+                        
                             <div class="discount-section">
                                 <div class="discount-input-group">
                                     <input type="text" 
@@ -198,7 +199,7 @@
                                     <span class="line-icon">💎</span>
                                     <span class="line-text">Итого к оплате</span>
                                 </div>
-                                <span class="line-value total-amount" id="final-total">{{ total }} ₽</span>
+                                <span class="line-value total-amount" id="final-total">{{ total|currency }}</span>
                         </div>
                         
                             <div class="payment-methods">
@@ -222,7 +223,7 @@
                                 <span class="checkout-icon">💳</span>
                                 <div class="checkout-content">
                                     <span class="checkout-text">Оформить заказ</span>
-                                    <span class="checkout-amount">{{ total }} ₽</span>
+                                    <span class="checkout-amount">{{ total|currency }}</span>
                                 </div>
                                 <span class="checkout-arrow">→</span>
                             </a>
@@ -276,13 +277,34 @@
 
 <!-- JavaScript для современной корзины -->
 <script>
+// Добавляем CSRF токен для AJAX запросов
 document.addEventListener('DOMContentLoaded', function() {
+    // Создаем скрытый input с CSRF токеном если его нет
+    if (!document.querySelector('[name=csrfmiddlewaretoken]')) {
+        const csrfToken = document.querySelector('meta[name=csrf-token]')?.getAttribute('content') || '{{ csrf_token }}';
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        document.body.appendChild(csrfInput);
+    }
+    
     // Инициализация корзины
     initCart();
     updateTotals();
 });
 
 let allSelected = true;
+
+// Функция для форматирования чисел с пробелами
+function formatNumber(num) {
+    // Если число целое, не добавляем десятичные знаки
+    if (num % 1 === 0) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    } else {
+        return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+}
 
 // Инициализация корзины
 function initCart() {
@@ -291,6 +313,24 @@ function initCart() {
     
     // Инициализируем промокод
     initPromoCode();
+    
+    // Форматируем все цены на странице
+    formatAllPrices();
+}
+
+// Форматирование всех цен на странице
+function formatAllPrices() {
+    // Форматируем цены в карточках товаров
+    const priceElements = document.querySelectorAll('.price-value, .total-value');
+    priceElements.forEach(element => {
+        const text = element.textContent;
+        // Убираем все символы кроме цифр, затем форматируем
+        const number = parseInt(text.replace(/[^\d]/g, ''));
+        if (number) {
+            const formatted = formatNumber(number);
+            element.textContent = text.replace(/[\d,]+/g, formatted);
+        }
+    });
 }
 
 // Обновление количества товара
@@ -309,33 +349,73 @@ function updateQuantity(itemId, change) {
 function updateQuantityInput(itemId, newValue) {
     const value = Math.max(1, Math.min(100, parseInt(newValue) || 1));
     
-    // Имитация обновления (в реальном проекте здесь будет AJAX)
-    setTimeout(() => {
-        updateTotals();
-        showNotification('Количество обновлено!', 'success');
-    }, 300);
+    // Отправляем AJAX запрос на сервер
+    fetch(`{% url 'appProducts:update_cart' 0 %}`.replace('0', itemId), {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            'quantity': value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateTotals();
+            showNotification('Количество обновлено!', 'success');
+        } else {
+            showNotification('Ошибка при обновлении количества', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Ошибка при обновлении количества', 'error');
+    });
 }
 
 // Удаление товара из корзины
 function removeItem(itemId) {
     if (confirm('Удалить товар из корзины?')) {
-        // Удаляем элемент из DOM с анимацией
-        const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
-        itemElement.style.transform = 'translateX(-100%)';
-        itemElement.style.opacity = '0';
-        
-        setTimeout(() => {
-            itemElement.remove();
-            updateTotals();
-            
-            // Проверяем, остались ли товары
-            const remainingItems = document.querySelectorAll('.cart-item-modern');
-            if (remainingItems.length === 0) {
-                location.reload(); // Перезагружаем страницу для показа пустой корзины
+        // Отправляем AJAX запрос на сервер
+        fetch(`{% url 'appProducts:remove_from_cart' 0 %}`.replace('0', itemId), {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Удаляем элемент из DOM с анимацией
+                const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+                if (itemElement) {
+                    itemElement.style.transform = 'translateX(-100%)';
+                    itemElement.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        itemElement.remove();
+                        updateTotals();
+                        
+                        // Проверяем, остались ли товары
+                        const remainingItems = document.querySelectorAll('.cart-item-modern');
+                        if (remainingItems.length === 0) {
+                            location.reload(); // Перезагружаем страницу для показа пустой корзины
+                        }
+                    }, 300);
+                }
+                
+                showNotification('Товар удален из корзины', 'success');
+            } else {
+                showNotification('Ошибка при удалении товара', 'error');
             }
-        }, 300);
-        
-        showNotification('Товар удален из корзины', 'info');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Ошибка при удалении товара', 'error');
+        });
     }
 }
 
@@ -372,19 +452,20 @@ function updateTotals() {
         const itemId = itemElement.dataset.itemId;
         const quantity = parseInt(document.getElementById(`qty-${itemId}`).value);
         const priceText = itemElement.querySelector('.price-value').textContent;
-        const price = parseInt(priceText.replace(/[^\d]/g, ''));
+        // Убираем все символы кроме цифр и пробелов, затем заменяем пробелы на пустую строку
+        const price = parseInt(priceText.replace(/[^\d\s]/g, '').replace(/\s/g, ''));
         totalAmount += price * quantity;
     });
     
-    // Обновляем отображение
+    // Обновляем отображение с форматированием
     document.getElementById('total-items').textContent = `${totalItems} шт.`;
-    document.getElementById('subtotal').textContent = `${totalAmount} ₽`;
-    document.getElementById('final-total').textContent = `${totalAmount} ₽`;
+    document.getElementById('subtotal').textContent = `${formatNumber(totalAmount)} ₽`;
+    document.getElementById('final-total').textContent = `${formatNumber(totalAmount)} ₽`;
     
     // Обновляем кнопку оформления заказа
     const checkoutAmount = document.querySelector('.checkout-amount');
     if (checkoutAmount) {
-        checkoutAmount.textContent = `${totalAmount} ₽`;
+        checkoutAmount.textContent = `${formatNumber(totalAmount)} ₽`;
     }
 }
 
@@ -424,9 +505,9 @@ function initPromoCode() {
         promoInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 applyPromoCode();
-            }
-        });
-    }
+                }
+            });
+        }
 }
 
 // Сохранить на потом

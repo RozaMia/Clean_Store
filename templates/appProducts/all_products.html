@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Все товары — Clean Store{% endblock %}
+
+{% block content %}
+<div class="all-products-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Главная</a>
+            <span class="breadcrumb-separator">→</span>
+            <span class="breadcrumb-current">Все товары</span>
+        </nav>
+
+        <!-- Заголовок страницы -->
+        <div class="page-header-modern">
+            <div class="page-title-section">
+                <h1 class="page-title-modern">🛍️ Все товары</h1>
+                <p class="page-subtitle">Найдено товаров: <span class="products-count">{{ total_products }}</span></p>
+            </div>
+        </div>
+
+        <!-- Фильтры и сортировка -->
+        <div class="filters-section-modern">
+            <div class="filters-header">
+                <h2 class="filters-title">Фильтры и сортировка</h2>
+                <p class="filters-subtitle">Настройте отображение товаров по вашим предпочтениям</p>
+            </div>
+            
+            <div class="filters-container">
+                <form method="get" class="filters-form">
+                    <!-- Поиск -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Поиск</h3>
+                        <div class="search-input-group">
+                            <input type="text" name="search" value="{{ search_query }}" 
+                                   placeholder="Поиск товаров..." class="search-input">
+                            <button type="submit" class="search-btn">🔍</button>
+                        </div>
+                    </div>
+
+                    <!-- Категории -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Категория</h3>
+                        <select name="category" class="filter-select" onchange="this.form.submit()">
+                            <option value="">Все категории</option>
+                            {% for category in categories %}
+                                <option value="{{ category.slug }}" 
+                                        {% if current_category == category.slug %}selected{% endif %}>
+                                    {{ category.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Подкатегории -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Подкатегория</h3>
+                        <select name="subcategory" class="filter-select" onchange="this.form.submit()">
+                            <option value="">Все подкатегории</option>
+                            {% for subcategory in subcategories %}
+                                <option value="{{ subcategory.slug }}" 
+                                        {% if current_subcategory == subcategory.slug %}selected{% endif %}>
+                                    {{ subcategory.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Сортировка -->
+                    <div class="filter-group">
+                        <h3 class="filter-group-title">Сортировка</h3>
+                        <select name="sort" class="filter-select" onchange="this.form.submit()">
+                            <option value="name" {% if current_sort == 'name' %}selected{% endif %}>По названию</option>
+                            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Цена: по возрастанию</option>
+                            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Сначала новые</option>
+                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>По популярности</option>
+                        </select>
+                    </div>
+
+                    <!-- Кнопки действий -->
+                    <div class="filter-actions">
+                        <button type="submit" class="apply-filters-btn">Применить фильтры</button>
+                        <a href="{% url 'appProducts:all_products' %}" class="clear-filters-btn">Сбросить</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Сетка товаров -->
+        {% if products %}
+            <div class="products-grid-modern">
+                {% for product in products %}
+                    <div class="product-card catalog-card" data-product-id="{{ product.id }}">
+                        <div class="product-image-container">
+                            {% if product.images.first %}
+                                <img src="{{ product.images.first.image.url }}" 
+                                     alt="{{ product.name }}" 
+                                     class="product-image">
+                            {% else %}
+                                <div class="product-image-placeholder">
+                                    <span class="placeholder-icon">📦</span>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Бейджи товара -->
+                            <div class="product-badges">
+                                {% if product.is_new %}
+                                    <span class="product-badge new">Новинка</span>
+                                {% endif %}
+                                {% if product.is_hit %}
+                                    <span class="product-badge hit">Хит</span>
+                                {% endif %}
+                                {% if product.is_sale %}
+                                    <span class="product-badge sale">Скидка</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="product-content">
+                            <div class="product-category">
+                                <span class="category-icon">📁</span>
+                                <span class="category-path">{{ product.subcategory.category.title }} → {{ product.subcategory.title }}</span>
+                            </div>
+                            
+                            <h3 class="product-name">
+                                <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}">
+                                    {{ product.name }}
+                                </a>
+                            </h3>
+                            
+                            <div class="product-description">
+                                <p>{{ product.description|truncatewords:15 }}</p>
+                            </div>
+                            
+                            <div class="product-price">
+                                <span class="price-current">{{ product.price|currency }}</span>
+                            </div>
+                            
+                            <div class="product-actions">
+                                <button class="action-btn wishlist-btn" onclick="toggleWishlist({{ product.id }})" title="В избранное">
+                                    <span class="action-icon">❤️</span>
+                                </button>
+                                <button class="action-btn compare-btn" onclick="toggleCompare({{ product.id }})" title="Сравнить">
+                                    <span class="action-icon">📌</span>
+                                </button>
+                                <button class="action-btn quick-view-btn" onclick="quickView({{ product.id }})" title="Быстрый просмотр">
+                                    <span class="action-icon">👁️</span>
+                                </button>
+                                <a href="{% url 'appProducts:add_to_cart' product.id %}" class="add-to-cart-btn" title="В корзину">
+                                    <span class="action-icon">🛒</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация -->
+            {% if page_obj.has_other_pages %}
+                <div class="pagination-modern">
+                    <div class="pagination-info">
+                        Показано {{ page_obj.start_index }}–{{ page_obj.end_index }} из {{ page_obj.paginator.count }} товаров
+                    </div>
+                    
+                    <div class="pagination-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page=1" class="pagination-btn">« Первая</a>
+                            <a href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}" class="pagination-btn">‹ Предыдущая</a>
+                        {% endif %}
+                        
+                        <span class="pagination-current">
+                            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                        </span>
+                        
+                        {% if page_obj.has_next %}
+                            <a href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}" class="pagination-btn">Следующая ›</a>
+                            <a href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="pagination-btn">Последняя »</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- Пустой результат -->
+            <div class="empty-results">
+                <div class="empty-icon">🔍</div>
+                <h2>Товары не найдены</h2>
+                <p>Попробуйте изменить параметры поиска или фильтры</p>
+                <a href="{% url 'appProducts:all_products' %}" class="btn btn-primary">Показать все товары</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- JavaScript для интерактивности -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация страницы
+    initAllProducts();
+});
+
+// Инициализация страницы всех товаров
+function initAllProducts() {
+    // Обновляем состояние кнопок избранного и сравнения
+    updateButtonStates();
+    
+    // Форматируем все цены
+    formatAllPrices();
+}
+
+// Функция для форматирования всех цен на странице
+function formatAllPrices() {
+    const priceElements = document.querySelectorAll('.price-current');
+    priceElements.forEach(element => {
+        const text = element.textContent;
+        const number = parseInt(text.replace(/[^\d\s]/g, '').replace(/\s/g, ''));
+        if (number) {
+            const formatted = formatNumber(number);
+            element.textContent = text.replace(/[\d\s]+/g, formatted);
+        }
+    });
+}
+
+// Функция для форматирования чисел с пробелами
+function formatNumber(num) {
+    if (num % 1 === 0) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    } else {
+        return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+}
+
+// Переключение избранного
+function toggleWishlist(productId) {
+    // Здесь будет логика добавления/удаления из избранного
+    showNotification('Товар добавлен в избранное', 'success');
+}
+
+// Переключение сравнения
+function toggleCompare(productId) {
+    // Здесь будет логика добавления/удаления из сравнения
+    showNotification('Товар добавлен к сравнению', 'info');
+}
+
+// Быстрый просмотр
+function quickView(productId) {
+    // Здесь будет логика быстрого просмотра
+    showNotification('Быстрый просмотр товара', 'info');
+}
+
+// Обновление состояния кнопок
+function updateButtonStates() {
+    // Здесь будет логика обновления состояния кнопок
+}
+
+// Показать уведомление
+function showNotification(message, type = 'info') {
+    // Создаем элемент уведомления
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Добавляем стили
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        font-weight: 500;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Анимация появления
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Удаляем через 3 секунды
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}
