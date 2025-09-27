@@ -25,6 +25,18 @@
 /* 8. Адаптивность */
 @import url('modules/08-responsive.css');
 
+/* 9. Страница товара */
+@import url('modules/09-product-detail.css');
+
+/* 10. Страница контактов */
+@import url('modules/10-contact.css');
+
+/* 11. Страницы аутентификации */
+@import url('modules/11-auth.css');
+
+/* 12. Страница оформления заказа */
+@import url('modules/12-checkout.css');
+
 /* ===== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ===== */
 /* Стили, которые не вошли в основные модули */
 

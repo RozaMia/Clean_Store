@@ -18,7 +18,11 @@ def check_css_structure():
         '05-home.css',
         '06-catalog.css',
         '07-cart.css',
-        '08-responsive.css'
+        '08-responsive.css',
+        '09-product-detail.css',
+        '10-contact.css',
+        '11-auth.css',
+        '12-checkout.css'
     ]
     
     print("🔍 Проверка структуры CSS модулей...")
@@ -87,7 +91,11 @@ def check_imports():
         '05-home.css',
         '06-catalog.css',
         '07-cart.css',
-        '08-responsive.css'
+        '08-responsive.css',
+        '09-product-detail.css',
+        '10-contact.css',
+        '11-auth.css',
+        '12-checkout.css'
     ]
     
     for imp in expected_imports:
