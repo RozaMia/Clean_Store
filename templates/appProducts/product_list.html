@@ -1,60 +1,170 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ subcategory.title }}{% endblock %}
+{% block title %}{{ subcategory.title }} — {{ category.title }} — Clean Store{% endblock %}
 
 {% block content %}
-<nav class="breadcrumb">
-    <a href="{% url 'appProducts:category_list' %}">Каталог</a> →
-    <a href="{% url 'appProducts:subcategory_list' category.slug %}">{{ category.title }}</a> →
-    <span>{{ subcategory.title }}</span>
-</nav>
+<div class="products-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Главная</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:category_list' %}" class="breadcrumb-link">Каталог</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:subcategory_list' category.slug %}" class="breadcrumb-link">{{ category.title }}</a>
+            <span class="breadcrumb-separator">→</span>
+            <span class="breadcrumb-current">{{ subcategory.title }}</span>
+        </nav>
 
-<h2>{{ subcategory.title }}</h2>
-
-<div class="filters">
-    <a href="?tag=new" class="tag">Новинки</a>
-    <a href="?tag=hit" class="tag">Хиты</a>
-    <a href="?tag=sale" class="tag">Распродажа</a>
-    <a href="." class="tag">Все</a>
-</div>
-
-<div class="product-card">
-    {% if product.is_new %}<span class="badge new">Новинка</span>{% endif %}
-    {% if product.is_hit %}<span class="badge hit">Хит</span>{% endif %}
-    {% if product.is_sale %}<span class="badge sale">Распродажа</span>{% endif %}
-    <!-- ... -->
-</div>
-
-<div class="products-grid">
-    {% for product in page_obj %}
-        <div class="product-card">
-            <a href="{% url 'appProducts:product_detail' category.slug subcategory.slug product.slug %}">
-                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="product-image">
-                <h4>{{ product.name }}</h4>
-                <p class="price">{{ product.price }}</p>
-            </a>
+        <!-- Заголовок подкатегории -->
+        <div class="category-header">
+            <div class="category-header-content">
+                <h1 class="category-title">{{ subcategory.title }}</h1>
+                {% if subcategory.description %}
+                    <p class="category-description">{{ subcategory.description }}</p>
+                {% endif %}
+                <div class="category-meta">
+                    <span class="subcategory-count">{{ page_obj.paginator.count }} товаров</span>
+                </div>
+            </div>
+            {% if subcategory.image %}
+                <div class="category-image">
+                    <img src="{{ subcategory.image.url }}" alt="{{ subcategory.title }}">
+                </div>
+            {% else %}
+                <div class="category-image-placeholder">
+                    {% if 'контейнер' in subcategory.title|lower %}🗂️
+                    {% elif 'сиз' in subcategory.title|lower %}🦺
+                    {% elif 'химия' in subcategory.title|lower %}🧪
+                    {% elif 'инвентарь' in subcategory.title|lower %}🧹
+                    {% elif 'средства' in subcategory.title|lower %}🧴
+                    {% elif 'урна' in subcategory.title|lower %}🗑️
+                    {% elif 'уборка' in subcategory.title|lower %}🧽
+                    {% else %}📋{% endif %}
+                </div>
+            {% endif %}
         </div>
-    {% empty %}
-        <p>Товары не найдены.</p>
-    {% endfor %}
+
+        <!-- Фильтры -->
+        <section class="filters-section">
+            <h2 class="section-title">Фильтры</h2>
+            <div class="filters-grid">
+                <a href="." class="filter-btn {% if not request.GET.tag %}active{% endif %}">
+                    <span class="filter-icon">🔍</span>
+                    Все товары
+                </a>
+                <a href="?tag=new" class="filter-btn {% if request.GET.tag == 'new' %}active{% endif %}">
+                    <span class="filter-icon">✨</span>
+                    Новинки
+                </a>
+                <a href="?tag=hit" class="filter-btn {% if request.GET.tag == 'hit' %}active{% endif %}">
+                    <span class="filter-icon">🔥</span>
+                    Хиты продаж
+                </a>
+                <a href="?tag=sale" class="filter-btn {% if request.GET.tag == 'sale' %}active{% endif %}">
+                    <span class="filter-icon">💰</span>
+                    Распродажа
+                </a>
+            </div>
+        </section>
+
+        <!-- Товары -->
+        <section class="products-section">
+            <div class="section-header">
+                <h2 class="section-title">Товары</h2>
+                <span class="products-count">Найдено: {{ page_obj.paginator.count }} товаров</span>
+            </div>
+            
+            <div class="products-grid">
+                {% for product in page_obj %}
+                    <div class="product-card catalog-card">
+                        <a href="{% url 'appProducts:product_detail' category.slug subcategory.slug product.slug %}" class="category-link-full">
+                            <div class="category-image-container">
+                                {% if product.main_image %}
+                                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="category-image">
+                                {% else %}
+                                    <div class="category-placeholder">
+                                        <span class="placeholder-emoji">🧽</span>
+                                        <div class="placeholder-text">
+                                            Нет изображения
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Бейджи -->
+                                <div class="product-badges">
+                                    {% if product.is_new %}
+                                        <span class="product-badge new">Новинка</span>
+                                    {% endif %}
+                                    {% if product.is_hit %}
+                                        <span class="product-badge hit">Хит</span>
+                                    {% endif %}
+                                    {% if product.is_sale %}
+                                        <span class="product-badge sale">Скидка</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="category-content">
+                                <h3 class="category-title">{{ product.name }}</h3>
+                                {% if product.description %}
+                                    <p class="category-description">{{ product.description|truncatewords:8 }}</p>
+                                {% endif %}
+                                <div class="category-meta">
+                                    <span class="product-price">
+                                        {{ product.price|floatformat:0 }} ₽
+                                    </span>
+                                    <div class="category-action">
+                                        <span class="category-btn">
+                                            Подробнее →
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h3>Товары не найдены</h3>
+                        <p>В данной подкатегории пока нет товаров</p>
+                        <a href="{% url 'appProducts:subcategory_list' category.slug %}" class="btn btn-primary">
+                            Вернуться к подкатегориям
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Пагинация -->
+        {% if page_obj.has_other_pages %}
+        <section class="pagination-section">
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}" class="pagination-btn">
+                        ⟨⟨ Первая
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}" class="pagination-btn">
+                        ⟨ Предыдущая
+                    </a>
+                {% endif %}
+
+                <span class="pagination-current">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}" class="pagination-btn">
+                        Следующая ⟩
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.tag %}&tag={{ request.GET.tag }}{% endif %}" class="pagination-btn">
+                        Последняя ⟩⟩
+                    </a>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
 </div>
-
-<!-- Пагинация -->
-{% if page_obj.has_other_pages %}
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page=1">&laquo; первая</a>
-        <a href="?page={{ page_obj.previous_page_number }}">‹ предыдущая</a>
-    {% endif %}
-
-    <span class="current-page">
-        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
-    </span>
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">следующая ›</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
-    {% endif %}
-</div>
-{% endif %}
 {% endblock %}

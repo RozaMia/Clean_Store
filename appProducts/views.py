@@ -117,8 +117,14 @@ def home_view(request):
         'subcategory__category'
     ).prefetch_related('images')[:6]
     
+    # Получаем популярные категории для главной страницы
+    popular_categories = Category.objects.filter(
+        is_active=True
+    ).prefetch_related('subcategories')[:9]  # Берем 9 категорий для сетки 3x3
+    
     return render(request, 'home/home.html', {
-        'new_products': new_products
+        'new_products': new_products,
+        'popular_categories': popular_categories
     })
 
 @login_required

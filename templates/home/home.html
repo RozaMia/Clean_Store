@@ -87,63 +87,62 @@
     <div class="container">
         <h2 class="section-title">Популярные категории</h2>
         <div class="categories-grid">
-            <div class="category-card">
-                <div class="category-icon">🧴</div>
-                <h3>Бытовая химия</h3>
-                <p>Моющие и чистящие средства</p>
-                <a href="/products/sredstva-dlya-uborki/" class="category-link">Смотреть →</a>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">🧹</div>
-                <h3>Швабры и метлы</h3>
-                <p>Инвентарь для пола</p>
-                <a href="/products/inventar-i-aksessuary/" class="category-link">Смотреть →</a>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">🥤</div>
-                <h3>Ведра и тазы</h3>
-                <p>Ёмкости для уборки</p>
-                <a href="/products/inventar-i-aksessuary/" class="category-link">Смотреть →</a>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">📦</div>
-                <h3>Контейнеры</h3>
-                <p>Хранение и организация</p>
-                <a href="/products/inventar-i-aksessuary/" class="category-link">Смотреть →</a>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">🧽</div>
-                <h3>Губки и щётки</h3>
-                <p>Инструменты для чистки</p>
-                <a href="/products/inventar-i-aksessuary/" class="category-link">Смотреть →</a>
-            </div>
-            <div class="category-card">
-                <div class="category-icon">🧤</div>
-                <h3>Перчатки и защита</h3>
-                <p>Средства индивидуальной защиты</p>
-                <a href="/products/professionalnaya-himiya/" class="category-link">Смотреть →</a>
-            </div>
-            
-            <div class="category-card">
-                <div class="category-icon">🧻</div>
-                <h3>Салфетки и тряпки</h3>
-                <p>Материалы для протирки</p>
-                <a href="/products/inventar-i-aksessuary/" class="category-link">Смотреть →</a>
-            </div>
-            
-            <div class="category-card">
-                <div class="category-icon">🔧</div>
-                <h3>Скребки и лопатки</h3>
-                <p>Инструменты для очистки</p>
-                <a href="/products/inventar-i-aksessuary/" class="category-link">Смотреть →</a>
-            </div>
-            
-            <div class="category-card">
-                <div class="category-icon">🧪</div>
-                <h3>Дезинфекция</h3>
-                <p>Антисептики и дезсредства</p>
-                <a href="/products/professionalnaya-himiya/" class="category-link">Смотреть →</a>
-            </div>
+            {% for category in popular_categories %}
+                <div class="category-card catalog-card">
+                    <a href="{% url 'appProducts:subcategory_list' category.slug %}" class="category-link-full">
+                        <div class="category-image-container">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
+                            {% else %}
+                                <div class="category-placeholder">
+                                    {% if 'сбора' in category.title|lower or 'отход' in category.title|lower %}
+                                        <span class="placeholder-emoji">🗑️</span>
+                                    {% elif 'сиз' in category.title|lower or 'защит' in category.title|lower %}
+                                        <span class="placeholder-emoji">🦺</span>
+                                    {% elif 'химия' in category.title|lower or 'професс' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧪</span>
+                                    {% elif 'инвентарь' in category.title|lower or 'аксессуар' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧹</span>
+                                    {% elif 'стирк' in category.title|lower or 'бель' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧺</span>
+                                    {% elif 'уборк' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧽</span>
+                                    {% else %}
+                                        <span class="placeholder-emoji">🧹</span>
+                                    {% endif %}
+                                    <div class="placeholder-text">
+                                        Загрузите изображение<br>
+                                        <small>через админку</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">{{ category.title }}</h3>
+                            {% if category.description %}
+                                <p class="category-description">{{ category.description|truncatewords:5 }}</p>
+                            {% endif %}
+                            <div class="category-meta">
+                                <span class="subcategories-count">
+                                    {{ category.subcategories.count }} подкатегорий
+                                </span>
+                                <div class="category-action">
+                                    <span class="category-btn">
+                                        Перейти →
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <!-- Fallback если нет категорий в базе -->
+                <div class="empty-state">
+                    <div class="empty-icon">📂</div>
+                    <h3>Категории загружаются</h3>
+                    <p>Скоро здесь появятся товары</p>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </section>

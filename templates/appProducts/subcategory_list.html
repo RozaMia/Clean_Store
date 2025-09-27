@@ -48,24 +48,52 @@
             <h2 class="section-title">Выберите подкатегорию</h2>
             <div class="subcategories-grid">
                 {% for sub in subcategories %}
-                    <div class="subcategory-card">
-                        <a href="{% url 'appProducts:product_list' category.slug sub.slug %}" class="subcategory-link">
-                            <div class="subcategory-icon">
-                                {% if 'контейнер' in sub.title|lower %}🗂️
-                                {% elif 'сиз' in sub.title|lower %}🦺
-                                {% elif 'химия' in sub.title|lower %}🧪
-                                {% elif 'инвентарь' in sub.title|lower %}🧹
-                                {% elif 'средства' in sub.title|lower %}🧴
-                                {% elif 'урна' in sub.title|lower %}🗑️
-                                {% elif 'уборка' in sub.title|lower %}🧽
-                                {% else %}📋{% endif %}
-                            </div>
-                            <div class="subcategory-content">
-                                <h3 class="subcategory-name">{{ sub.title }}</h3>
-                                {% if sub.description %}
-                                    <p class="subcategory-description">{{ sub.description|truncatewords:8 }}</p>
+                    <div class="subcategory-card catalog-card">
+                        <a href="{% url 'appProducts:product_list' category.slug sub.slug %}" class="category-link-full">
+                            <div class="category-image-container">
+                                {% if sub.image %}
+                                    <img src="{{ sub.image.url }}" alt="{{ sub.title }}" class="category-image">
+                                {% else %}
+                                    <div class="category-placeholder">
+                                        {% if 'контейнер' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🗂️</span>
+                                        {% elif 'сиз' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🦺</span>
+                                        {% elif 'химия' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🧪</span>
+                                        {% elif 'инвентарь' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🧹</span>
+                                        {% elif 'средства' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🧴</span>
+                                        {% elif 'урна' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🗑️</span>
+                                        {% elif 'уборка' in sub.title|lower %}
+                                            <span class="placeholder-emoji">🧽</span>
+                                        {% else %}
+                                            <span class="placeholder-emoji">📋</span>
+                                        {% endif %}
+                                        <div class="placeholder-text">
+                                            Загрузите изображение<br>
+                                            <small>через админку</small>
+                                        </div>
+                                    </div>
                                 {% endif %}
-                                <div class="subcategory-arrow">→</div>
+                            </div>
+                            <div class="category-content">
+                                <h3 class="category-title">{{ sub.title }}</h3>
+                                {% if sub.description %}
+                                    <p class="category-description">{{ sub.description|truncatewords:8 }}</p>
+                                {% endif %}
+                                <div class="category-meta">
+                                    <span class="subcategories-count">
+                                        {{ sub.product_set.count }} товаров
+                                    </span>
+                                    <div class="category-action">
+                                        <span class="category-btn">
+                                            Перейти →
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     </div>

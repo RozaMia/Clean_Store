@@ -83,6 +83,18 @@ class Subcategory(models.Model):
         unique=True,
         blank=True
     )
+    description = models.TextField(
+        verbose_name='Описание',
+        blank=True,
+        null=True
+    )
+    image = models.ImageField(
+        verbose_name='Изображение подкатегории',
+        upload_to='subcategories/',
+        blank=True,
+        null=True,
+        validators=[validate_image_size, validate_image_extension]
+    )
     is_active = models.BooleanField(
         verbose_name='Активна',
         default=True
