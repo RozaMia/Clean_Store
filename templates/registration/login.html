@@ -1,13 +1,98 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Вход{% endblock %}
+{% block title %}Вход в систему — Clean Store{% endblock %}
 
 {% block content %}
-<h2>Войти в аккаунт</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Войти</button>
-</form>
-<p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-wrapper">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="auth-icon">🔐</div>
+                    <h1 class="auth-title">Войти в аккаунт</h1>
+                    <p class="auth-subtitle">Добро пожаловать в Clean Store!</p>
+                </div>
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="form-errors">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <div class="error-message">
+                                        <span class="error-icon">⚠️</span>
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <span class="label-icon">👤</span>
+                            Имя пользователя
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.help_text %}
+                            <div class="form-help">{{ form.username.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                            <span class="label-icon">🔒</span>
+                            Пароль
+                        </label>
+                        {{ form.password }}
+                        {% if form.password.help_text %}
+                            <div class="form-help">{{ form.password.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg auth-submit">
+                        🚀 Войти в систему
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <div class="auth-divider">
+                        <span>или</span>
+                    </div>
+                    
+                    <p class="auth-link-text">
+                        Нет аккаунта? 
+                        <a href="{% url 'register' %}" class="auth-link">
+                            ✨ Зарегистрироваться
+                        </a>
+                    </p>
+                </div>
+
+                <div class="auth-features">
+                    <h3>Преимущества аккаунта</h3>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">🛒</span>
+                            <span>Корзина и история покупок</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">⚡</span>
+                            <span>Быстрое оформление заказов</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🎁</span>
+                            <span>Персональные скидки</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📋</span>
+                            <span>Отслеживание заказов</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

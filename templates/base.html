@@ -67,7 +67,10 @@
                         {% if user.is_authenticated %}
                             <div class="user-menu">
                                 <span class="user-link">👤 {{ user.username }}</span>
-                                <a href="{% url 'logout' %}" class="user-link">Выход</a>
+                                <form method="post" action="{% url 'custom_logout' %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="user-link logout-btn">Выход</button>
+                                </form>
                             </div>
                         {% else %}
                             <div class="user-menu">

@@ -1,12 +1,117 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}Регистрация — Clean Store{% endblock %}
 
 {% block content %}
-<h2>Регистрация</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Зарегистрироваться</button>
-</form>
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-wrapper">
+            <div class="auth-card register-card">
+                <div class="auth-header">
+                    <div class="auth-icon">✨</div>
+                    <h1 class="auth-title">Регистрация</h1>
+                    <p class="auth-subtitle">Присоединяйтесь к Clean Store!</p>
+                </div>
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="form-errors">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <div class="error-message">
+                                        <span class="error-icon">⚠️</span>
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <span class="label-icon">👤</span>
+                            Имя пользователя
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.help_text %}
+                            <div class="form-help">{{ form.username.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
+                            <span class="label-icon">🔒</span>
+                            Пароль
+                        </label>
+                        {{ form.password1 }}
+                        {% if form.password1.help_text %}
+                            <div class="form-help">{{ form.password1.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            <span class="label-icon">🔐</span>
+                            Подтверждение пароля
+                        </label>
+                        {{ form.password2 }}
+                        {% if form.password2.help_text %}
+                            <div class="form-help">{{ form.password2.help_text }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg auth-submit">
+                        🎉 Зарегистрироваться
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <div class="auth-divider">
+                        <span>или</span>
+                    </div>
+                    
+                    <p class="auth-link-text">
+                        Уже есть аккаунт? 
+                        <a href="{% url 'login' %}" class="auth-link">
+                            🔐 Войти в систему
+                        </a>
+                    </p>
+                </div>
+
+                <div class="auth-features">
+                    <h3>Что вас ждет после регистрации</h3>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">🛍️</span>
+                            <span>Доступ к 10,000+ товаров</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🚚</span>
+                            <span>Быстрая доставка по всей стране</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">💰</span>
+                            <span>Лучшие цены и скидки</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📞</span>
+                            <span>Поддержка 24/7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="privacy-notice">
+                    <p>
+                        <span class="privacy-icon">🔒</span>
+                        Регистрируясь, вы соглашаетесь с нашей политикой конфиденциальности. 
+                        Мы никогда не передаем ваши данные третьим лицам.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
