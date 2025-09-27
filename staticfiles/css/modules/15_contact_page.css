@@ -1,0 +1,784 @@
+/* ===== CONTACT PAGE ===== */
+.contact-page {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.contact-header {
+  text-align: center;
+    margin-bottom: var(--spacing-3xl);
+}
+
+.contact-title {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.contact-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-600);
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-3xl);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.contact-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.info-card {
+    background: var(--color-white);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: transform var(--transition-fast);
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.info-icon {
+    font-size: 48px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.info-content h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.info-content a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.info-content a:hover {
+    color: var(--color-secondary);
+}
+
+.info-content p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    margin: var(--spacing-xs) 0;
+}
+
+.additional-info {
+    background: var(--color-white);
+    padding: var(--spacing-2xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.additional-info h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-900);
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.contact-method {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius);
+}
+
+.method-icon {
+    font-size: var(--font-size-xl);
+}
+
+.method-info strong {
+    display: block;
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.method-info p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+.contact-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.contact-form-section .form-card {
+    background: var(--color-white);
+    padding: var(--spacing-2xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.contact-form-section h2 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-gray-900);
+}
+
+.contact-form-section p {
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.faq-section {
+    background: var(--color-gray-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+}
+
+.faq-section h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-800);
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.faq-item {
+    padding: var(--spacing-md);
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+}
+
+.faq-item strong {
+    display: block;
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin-bottom: var(--spacing-sm);
+}
+
+.faq-item p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+.map-section {
+    background: var(--color-white);
+    padding: var(--spacing-3xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.map-section h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    color: var(--color-gray-900);
+}
+
+.map-container {
+    height: 300px;
+    background: var(--color-gray-100);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.map-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-gray-600);
+}
+
+.map-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.7;
+}
+
+.map-placeholder h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-gray-800);
+}
+
+.map-placeholder p {
+    margin: var(--spacing-xs) 0;
+}
+
+/* Современная секция карты */
+.map-section-modern {
+    background: var(--color-white);
+    padding: var(--spacing-3xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.map-header {
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+}
+
+.map-header h2 {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.map-header p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-lg);
+}
+
+.map-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: var(--spacing-3xl);
+    margin-bottom: var(--spacing-3xl);
+}
+
+/* Боковая панель с информацией */
+.map-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.location-card {
+    background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-white) 100%);
+    padding: var(--spacing-2xl);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--color-gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.location-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.location-icon {
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+    width: 80px;
+    height: 80px;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+}
+
+.location-info h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.location-info p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-base);
+    margin: 0;
+}
+
+.location-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-white);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--color-primary);
+    transition: all var(--transition-fast);
+}
+
+.detail-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-icon {
+    font-size: var(--font-size-xl);
+    min-width: 32px;
+    text-align: center;
+}
+
+.detail-content strong {
+    display: block;
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin-bottom: var(--spacing-xs);
+}
+
+.detail-content p {
+    color: var(--color-gray-600);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.detail-content a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.detail-content a:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+.location-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.map-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-primary);
+    background: var(--color-white);
+    color: var(--color-primary);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.map-action-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: translateY(-1px);
+}
+
+.map-action-btn.route {
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.map-action-btn.route:hover {
+    background: var(--color-success);
+    color: var(--color-white);
+}
+
+/* Контейнер карты */
+.map-container-modern {
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.interactive-map {
+    height: 400px;
+    width: 100%;
+    background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+    position: relative;
+}
+
+.map-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--color-gray-600);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--color-gray-200);
+    border-top: 4px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mock карта */
+.mock-map {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    overflow: hidden;
+}
+
+.map-marker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.marker-pin {
+    font-size: 40px;
+    animation: bounce 2s infinite;
+}
+
+.marker-info {
+    background: var(--color-white);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    margin-top: var(--spacing-sm);
+    text-align: center;
+    min-width: 150px;
+}
+
+.marker-info h4 {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-gray-800);
+}
+
+.marker-info p {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+}
+
+.map-streets {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.street {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+}
+
+.street-1 {
+    width: 80%;
+    height: 4px;
+    top: 30%;
+    left: 10%;
+}
+
+.street-2 {
+    width: 4px;
+    height: 70%;
+    top: 15%;
+    left: 60%;
+}
+
+.street-3 {
+    width: 60%;
+    height: 4px;
+    top: 70%;
+    left: 20%;
+}
+
+.map-buildings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.building {
+    position: absolute;
+    background: rgba(100, 100, 100, 0.2);
+    border-radius: 2px;
+}
+
+.building-1 {
+    width: 30px;
+    height: 40px;
+    top: 20%;
+    left: 30%;
+}
+
+.building-2 {
+    width: 40px;
+    height: 30px;
+    top: 60%;
+    left: 70%;
+}
+
+.building-3 {
+    width: 25px;
+    height: 35px;
+    top: 75%;
+    left: 15%;
+}
+
+.map-zoom {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.zoom-btn {
+    width: 32px;
+    height: 32px;
+    background: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-gray-700);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.zoom-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Элементы управления картой */
+.map-controls {
+    position: absolute;
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.map-control-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-700);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-fast);
+}
+
+.map-control-btn:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: scale(1.05);
+}
+
+/* Зоны доставки */
+.delivery-zones {
+    background: var(--color-gray-50);
+    padding: var(--spacing-2xl);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-gray-200);
+}
+
+.delivery-zones h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.zones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.zone-card {
+    background: var(--color-white);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    border-left: 4px solid var(--color-gray-300);
+}
+
+.zone-card.express {
+    border-left-color: var(--color-warning);
+}
+
+.zone-card.standard {
+    border-left-color: var(--color-primary);
+}
+
+.zone-card.regions {
+    border-left-color: var(--color-success);
+}
+
+.zone-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.zone-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.zone-icon {
+    font-size: var(--font-size-2xl);
+}
+
+.zone-header h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin: 0;
+}
+
+.zone-content p {
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.5;
+}
+
+.zone-price {
+    background: linear-gradient(135deg, var(--color-gray-100), var(--color-gray-200));
+    color: var(--color-gray-800);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+.zone-card.express .zone-price {
+    background: linear-gradient(135deg, var(--color-warning), #f97316);
+    color: var(--color-white);
+}
+
+.zone-card.standard .zone-price {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+}
+
+.zone-card.regions .zone-price {
+    background: linear-gradient(135deg, var(--color-success), #26d36b);
+    color: var(--color-white);
+}
+
+.contact-benefits {
+    background: var(--color-white);
+    padding: var(--spacing-3xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.contact-benefits h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    color: var(--color-gray-900);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.benefit-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.benefit-card:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.benefit-card .benefit-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.8;
+}
+
+.benefit-card h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+}
+
+.benefit-card p {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}

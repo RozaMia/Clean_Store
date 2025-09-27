@@ -1,0 +1,176 @@
+/* ===== HOME PAGE SPECIFIC STYLES ===== */
+
+/* Дополнительные стили для главной страницы */
+.home-page {
+    background: linear-gradient(135deg, var(--color-gray-50) 0%, var(--color-white) 100%);
+    min-height: 100vh;
+}
+
+/* Анимации для главной страницы */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Применение анимаций */
+.main-banner {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.popular-categories .catalog-card {
+    animation: slideInLeft 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.popular-categories .catalog-card:nth-child(even) {
+    animation-name: slideInRight;
+}
+
+.popular-categories .catalog-card:nth-child(1) { animation-delay: 0.1s; }
+.popular-categories .catalog-card:nth-child(2) { animation-delay: 0.2s; }
+.popular-categories .catalog-card:nth-child(3) { animation-delay: 0.3s; }
+.popular-categories .catalog-card:nth-child(4) { animation-delay: 0.4s; }
+.popular-categories .catalog-card:nth-child(5) { animation-delay: 0.5s; }
+.popular-categories .catalog-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Специальные стили для промо-секций */
+.promotions-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.promotions-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(0,102,204,0.05)"/></svg>') repeat;
+    pointer-events: none;
+}
+
+/* Улучшенные стили для статистики */
+.hero-stats .stat-card {
+    animation: fadeInUp 0.8s ease-out;
+    animation-fill-mode: both;
+}
+
+.hero-stats .stat-card:nth-child(1) { animation-delay: 0.2s; }
+.hover-stats .stat-card:nth-child(2) { animation-delay: 0.4s; }
+.hero-stats .stat-card:nth-child(3) { animation-delay: 0.6s; }
+
+/* Интерактивные эффекты */
+.feature-item:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.promo-card:hover .promo-badge {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* Специальные эффекты для кнопок */
+.hero-actions .btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-actions .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.hero-actions .btn:hover::before {
+    left: 100%;
+}
+
+/* Улучшенная типографика для главной */
+.hero-title {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: 2px;
+}
+
+/* Специальные стили для мобильных устройств */
+@media (max-width: 768px) {
+    .home-page {
+        padding: 0;
+    }
+    
+    .hero-features {
+        justify-content: center;
+    }
+    
+    .feature-item {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .hero-stats {
+        gap: var(--spacing-md);
+    }
+    
+    .stat-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .promotions-grid {
+        gap: var(--spacing-lg);
+    }
+}
+
+/* Темная тема (если потребуется) */
+@media (prefers-color-scheme: dark) {
+    .home-page {
+        background: linear-gradient(135deg, var(--color-gray-900) 0%, var(--color-gray-800) 100%);
+    }
+}

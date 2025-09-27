@@ -1,0 +1,201 @@
+/* ===== CHECKOUT PAGE ===== */
+.checkout-page {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.checkout-header {
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+}
+
+.checkout-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-xl);
+}
+
+.checkout-steps {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2xl);
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-gray-400);
+}
+
+.step.active {
+    color: var(--color-primary);
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-gray-200);
+    color: var(--color-gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+}
+
+.step.active .step-number {
+    background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.step-label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.checkout-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-3xl);
+}
+
+.form-card {
+    background: var(--color-white);
+    padding: var(--spacing-3xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.form-card h2 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-2xl);
+    color: var(--color-gray-900);
+}
+
+.form-section {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.form-section h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-800);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-gray-700);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+  outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--color-primary);
+}
+
+.form-error {
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.form-help {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--spacing-lg);
+    justify-content: space-between;
+    margin-top: var(--spacing-2xl);
+}
+
+.checkout-summary .summary-card h2 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-900);
+}
+
+.order-placeholder {
+    padding: var(--spacing-lg);
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius);
+    text-align: center;
+    color: var(--color-gray-500);
+    margin-bottom: var(--spacing-lg);
+}
+
+.payment-methods h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-800);
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+}
+
+.payment-icon {
+    font-size: var(--font-size-lg);
+}
+
+.checkout-guarantees {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.guarantee {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.guarantee-icon {
+    font-size: var(--font-size-lg);
+}
