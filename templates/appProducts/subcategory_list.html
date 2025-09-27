@@ -32,13 +32,13 @@
                 </div>
             {% else %}
                 <div class="category-image-placeholder">
-                    {% if 'красота' in category.title|lower %}🧴
-                    {% elif 'дом' in category.title|lower %}🏠
-                    {% elif 'посуда' in category.title|lower %}🍽️
-                    {% elif 'хоз' in category.title|lower %}🧽
-                    {% elif 'одежда' in category.title|lower %}👕
-                    {% elif 'творчество' in category.title|lower %}🎨
-                    {% else %}📦{% endif %}
+                    {% if 'сбора' in category.title|lower or 'отход' in category.title|lower %}🗑️
+                    {% elif 'сиз' in category.title|lower or 'защит' in category.title|lower %}🦺
+                    {% elif 'химия' in category.title|lower or 'професс' in category.title|lower %}🧪
+                    {% elif 'инвентарь' in category.title|lower or 'аксессуар' in category.title|lower %}🧹
+                    {% elif 'стирк' in category.title|lower or 'бель' in category.title|lower %}🧺
+                    {% elif 'уборк' in category.title|lower %}🧽
+                    {% else %}🧹{% endif %}
                 </div>
             {% endif %}
         </div>

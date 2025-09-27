@@ -36,7 +36,7 @@
                                     {% if product.main_image %}
                                         <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
                                     {% else %}
-                                        <div class="image-placeholder">📦</div>
+                                        <div class="image-placeholder">🧹</div>
                                     {% endif %}
                                     {% if product.is_new %}
                                         <div class="product-badge new">NEW</div>
@@ -93,13 +93,13 @@
                                     <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
                                 {% else %}
                                     <div class="category-placeholder">
-                                        {% if 'красота' in category.title|lower %}🧴
-                                        {% elif 'дом' in category.title|lower %}🏠
-                                        {% elif 'посуда' in category.title|lower %}🍽️
-                                        {% elif 'хоз' in category.title|lower %}🧽
-                                        {% elif 'одежда' in category.title|lower %}👕
-                                        {% elif 'творчество' in category.title|lower %}🎨
-                                        {% else %}📦{% endif %}
+                                        {% if 'сбора' in category.title|lower or 'отход' in category.title|lower %}🗑️
+                                        {% elif 'сиз' in category.title|lower or 'защит' in category.title|lower %}🦺
+                                        {% elif 'химия' in category.title|lower or 'професс' in category.title|lower %}🧪
+                                        {% elif 'инвентарь' in category.title|lower or 'аксессуар' in category.title|lower %}🧹
+                                        {% elif 'стирк' in category.title|lower or 'бель' in category.title|lower %}🧺
+                                        {% elif 'уборк' in category.title|lower %}🧽
+                                        {% else %}🧹{% endif %}
                                     </div>
                                 {% endif %}
                             </div>
@@ -118,7 +118,7 @@
                     </div>
                 {% empty %}
                     <div class="empty-state">
-                        <div class="empty-icon">📦</div>
+                        <div class="empty-icon">🧹</div>
                         <h3>Категории временно недоступны</h3>
                         <p>Мы работаем над наполнением каталога. Попробуйте зайти позже.</p>
                         <a href="{% url 'home' %}" class="btn btn-primary">На главную</a>

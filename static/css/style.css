@@ -727,10 +727,11 @@ a:hover {
 
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
     justify-content: center;
     max-width: none;
+    align-items: stretch;
 }
 
 .category-card {
@@ -1140,6 +1141,8 @@ a:hover {
     overflow: hidden;
     transition: all var(--transition-fast);
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .catalog-card:hover {
@@ -1148,7 +1151,8 @@ a:hover {
 }
 
 .category-link-full {
-    display: block;
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
     color: inherit;
     height: 100%;
@@ -1182,6 +1186,11 @@ a:hover {
 
 .category-content {
     padding: var(--spacing-xl);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px;
 }
 
 .category-title {
@@ -1190,6 +1199,11 @@ a:hover {
     color: var(--color-gray-900);
     margin-bottom: var(--spacing-md);
     line-height: 1.3;
+    text-align: center;
+    min-height: 2.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .category-description {
@@ -1197,12 +1211,15 @@ a:hover {
     font-size: var(--font-size-sm);
     line-height: 1.5;
     margin-bottom: var(--spacing-lg);
+    text-align: center;
+    flex: 1;
 }
 
 .category-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    margin-top: auto;
 }
 
 .subcategories-count {
