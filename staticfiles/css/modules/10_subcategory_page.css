@@ -1,0 +1,183 @@
+.subcategory-page {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.category-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--spacing-2xl);
+    align-items: center;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    padding: var(--spacing-3xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-3xl);
+    color: var(--color-white);
+}
+
+.category-header-content h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    color: var(--color-white);
+    margin-bottom: var(--spacing-md);
+}
+
+.category-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.category-meta {
+    display: flex;
+    gap: var(--spacing-lg);
+}
+
+.subcategory-count {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.category-image {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--border-radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.category-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+.category-image-placeholder {
+    width: 120px;
+    height: 120px;
+    background: var(--color-gray-100);
+    border-radius: var(--border-radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    opacity: 0.7;
+}
+
+.subcategories-section {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.subcategories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    align-items: stretch;
+}
+
+.subcategory-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: all var(--transition-fast);
+}
+
+.subcategory-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.subcategory-link {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-xl);
+    text-decoration: none;
+    color: inherit;
+    gap: var(--spacing-lg);
+}
+
+.subcategory-icon {
+    font-size: 48px;
+    opacity: 0.8;
+    min-width: 60px;
+    text-align: center;
+}
+
+.subcategory-content {
+    flex: 1;
+}
+
+.subcategory-name {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.3;
+}
+
+.subcategory-description {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+.subcategory-arrow {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    transition: transform var(--transition-fast);
+}
+
+.subcategory-card:hover .subcategory-arrow {
+    transform: translateX(4px);
+}
+
+.empty-subcategories {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--spacing-3xl);
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius-lg);
+}
+
+.empty-subcategories h3 {
+    font-size: var(--font-size-xl);
+    color: var(--color-gray-700);
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-subcategories p {
+    color: var(--color-gray-500);
+    margin-bottom: var(--spacing-xl);
+}
+
+.category-products {
+    background: var(--color-white);
+    padding: var(--spacing-3xl);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.products-preview {
+    text-align: center;
+}
+
+.products-placeholder {
+    padding: var(--spacing-3xl);
+    color: var(--color-gray-500);
+}
+
+.products-placeholder .placeholder-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}

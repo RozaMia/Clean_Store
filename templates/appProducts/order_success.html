@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Спасибо за заказ — Clean Store{% endblock %}
+
+{% block content %}
+<div class="order-success-page">
+    <div class="container">
+        <div class="success-content">
+            <div class="success-card">
+                <div class="success-icon">🎉</div>
+                <h1>Спасибо за заказ!</h1>
+                <p class="success-message">Ваш заказ успешно оформлен и принят в обработку.</p>
+                
+                <div class="order-info">
+                    <div class="order-number">
+                        <strong>Номер заказа: #{{ order.id|default:"2024" }}</strong>
+                    </div>
+                    <p>Мы свяжемся с вами в ближайшее время для подтверждения заказа.</p>
+                </div>
+                
+                <div class="next-steps">
+                    <h3>Что дальше?</h3>
+                    <div class="steps-list">
+                        <div class="step">
+                            <span class="step-icon">📋</span>
+                            <div class="step-content">
+                                <strong>Обработка заказа</strong>
+                                <p>Менеджер проверит наличие товаров и свяжется с вами</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-icon">📦</span>
+                            <div class="step-content">
+                                <strong>Сборка и упаковка</strong>
+                                <p>Аккуратно упакуем ваши товары для доставки</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-icon">🚚</span>
+                            <div class="step-content">
+                                <strong>Доставка</strong>
+                                <p>Доставим заказ в удобное для вас время</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-info">
+                    <h3>Связаться с нами</h3>
+                    <div class="contact-methods">
+                        <div class="contact-item">
+                            <span class="contact-icon">📞</span>
+                            <a href="tel:+78001234567">8 800 123 45 67</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <a href="mailto:info@cleanstore.ru">info@cleanstore.ru</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">💬</span>
+                            <a href="{% url 'appProducts:contact' %}">Форма обратной связи</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                        🏠 На главную
+                    </a>
+                    <a href="{% url 'appProducts:category_list' %}" class="btn btn-secondary">
+                        🛍️ Продолжить покупки
+                    </a>
+                </div>
+                
+                <!-- Рекомендации -->
+                <div class="recommendations">
+                    <h3>Рекомендуем также</h3>
+                    <div class="recommendation-cards">
+                        <div class="recommendation-card">
+                            <span class="rec-icon">🧽</span>
+                            <div class="rec-content">
+                                <strong>Губки для посуды</strong>
+                                <p>Дополните ваш заказ качественными губками</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-card">
+                            <span class="rec-icon">🧴</span>
+                            <div class="rec-content">
+                                <strong>Моющие средства</strong>
+                                <p>Эффективная бытовая химия для дома</p>
+                            </div>
+                        </div>
+                        <div class="recommendation-card">
+                            <span class="rec-icon">🧤</span>
+                            <div class="rec-content">
+                                <strong>Защитные перчатки</strong>
+                                <p>Защитите руки во время уборки</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Clean Store — Интернет-магазин товаров для дома и красоты{% endblock %}
+
+{% block content %}
+<!-- Главный баннер с акциями -->
+<section class="main-banner">
+    <div class="container">
+        <div class="banner-hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Clean Store</h1>
+                <p class="hero-subtitle">Интернет-магазин товаров для дома и красоты</p>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">🚚</div>
+                        <span>Быстрая доставка</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💰</div>
+                        <span>Низкие цены</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✅</div>
+                        <span>Гарантия качества</span>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <a href="{% url 'appProducts:category_list' %}" class="btn btn-primary btn-lg">
+                        🛍️ Смотреть каталог
+                    </a>
+                    <a href="{% url 'appProducts:contact' %}" class="btn btn-secondary btn-lg">
+                        📞 Связаться с нами
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Статистика -->
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Товаров</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Клиентов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Довольны</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Акционные баннеры -->
+        <div class="promo-banners">
+            <div class="promo-card featured">
+                <div class="promo-badge sale">-50%</div>
+                <div class="promo-content">
+                    <h3>Средства для уборки</h3>
+                    <p>Скидки до 50% на бытовую химию и чистящие средства</p>
+                    <a href="/products/sredstva-dlya-uborki/" class="btn btn-accent">Подробнее</a>
+                </div>
+            </div>
+            <div class="promo-card">
+                <div class="promo-badge new">NEW</div>
+                <div class="promo-content">
+                    <h3>Инвентарь для дома</h3>
+                    <p>Швабры, ведра, контейнеры — всё для порядка</p>
+                    <a href="/products/inventar-i-aksessuary/" class="btn btn-success">Смотреть</a>
+                </div>
+            </div>
+            <div class="promo-card">
+                <div class="promo-badge gift">🎁</div>
+                <div class="promo-content">
+                    <h3>Профессиональная химия</h3>
+                    <p>Концентраты и специальные средства для клининга</p>
+                    <a href="/products/professionalnaya-himiya/" class="btn btn-primary">Выбрать</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Популярные категории -->
+<section class="popular-categories">
+    <div class="container">
+        <h2 class="section-title">Популярные категории</h2>
+        <div class="categories-grid">
+            {% for category in popular_categories %}
+                <div class="category-card catalog-card">
+                    <a href="{% url 'appProducts:subcategory_list' category.slug %}" class="category-link-full">
+                        <div class="category-image-container">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.title }}" class="category-image">
+                            {% else %}
+                                <div class="category-placeholder">
+                                    {% if 'сбора' in category.title|lower or 'отход' in category.title|lower %}
+                                        <span class="placeholder-emoji">🗑️</span>
+                                    {% elif 'сиз' in category.title|lower or 'защит' in category.title|lower %}
+                                        <span class="placeholder-emoji">🦺</span>
+                                    {% elif 'химия' in category.title|lower or 'професс' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧪</span>
+                                    {% elif 'инвентарь' in category.title|lower or 'аксессуар' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧹</span>
+                                    {% elif 'стирк' in category.title|lower or 'бель' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧺</span>
+                                    {% elif 'уборк' in category.title|lower %}
+                                        <span class="placeholder-emoji">🧽</span>
+                                    {% else %}
+                                        <span class="placeholder-emoji">🧹</span>
+                                    {% endif %}
+                                    <div class="placeholder-text">
+                                        Загрузите изображение<br>
+                                        <small>через админку</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="category-content">
+                            <h3 class="category-title">{{ category.title }}</h3>
+                            {% if category.description %}
+                                <p class="category-description">{{ category.description|truncatewords:5 }}</p>
+                            {% endif %}
+                            <div class="category-meta">
+                                <span class="subcategories-count">
+                                    {{ category.subcategories.count }} подкатегорий
+                                </span>
+                                <div class="category-action">
+                                    <span class="category-btn">
+                                        Перейти →
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <!-- Fallback если нет категорий в базе -->
+                <div class="empty-state">
+                    <div class="empty-icon">📂</div>
+                    <h3>Категории загружаются</h3>
+                    <p>Скоро здесь появятся товары</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Акции -->
+<section class="promotions">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Акции</h2>
+            <a href="{% url 'appProducts:category_list' %}" class="view-all-link">Смотреть все →</a>
+        </div>
+        <div class="promotions-grid">
+            <div class="promotion-card featured">
+                <div class="promotion-badge">Спецпредложение</div>
+                    <h3>Специальные цены на товары для уборки</h3>
+                    <p>Скидки до 50% на бытовую химию и инвентарь</p>
+                <a href="/products/sredstva-dlya-uborki/" class="btn btn-accent">Подробнее</a>
+            </div>
+            <div class="promotion-card gift">
+                <div class="promotion-badge gift">Подарок</div>
+                    <h3>Профессиональные наборы</h3>
+                    <p>Комплекты для глубокой уборки со скидкой до 30%</p>
+                <a href="/products/inventar-i-aksessuary/" class="btn btn-success">Участвовать</a>
+            </div>
+            <div class="promotion-card">
+                <div class="promotion-badge">Новинка</div>
+                    <h3>Новинки уборочного инвентаря</h3>
+                    <p>Современные решения для идеальной чистоты</p>
+                <a href="/products/professionalnaya-himiya/" class="btn btn-primary">Смотреть</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Новинки -->
+{% if new_products %}
+<section class="new-products">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Новинки</h2>
+            <a href="{% url 'appProducts:category_list' %}" class="view-all-link">Все новинки →</a>
+        </div>
+        <div class="products-grid">
+            {% for product in new_products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="image-placeholder">🧽</div>
+                        {% endif %}
+                        <div class="product-badge new">NEW</div>
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-name">{{ product.name }}</h4>
+                        <p class="product-category">{{ product.subcategory.category.title }}</p>
+                        <div class="product-price">{{ product.price }} ₽</div>
+                        <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" 
+                           class="btn btn-primary btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- О магазине -->
+<section class="about-store">
+    <div class="container">
+        <div class="about-content">
+            <h2>Clean Store</h2>
+            <p>Качественные товары для уборки и чистоты дома по доступным ценам. Быстро, удобно, выгодно!</p>
+            <div class="store-stats">
+                <div class="stat">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Товаров для уборки</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">25,000+</div>
+                    <div class="stat-label">Чистых домов</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Идеальной чистоты</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Оформление заказа — Clean Store{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <div class="container">
+        <!-- Хлебные крошки -->
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}" class="breadcrumb-link">Главная</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:category_list' %}" class="breadcrumb-link">Каталог</a>
+            <span class="breadcrumb-separator">→</span>
+            <a href="{% url 'appProducts:cart' %}" class="breadcrumb-link">Корзина</a>
+            <span class="breadcrumb-separator">→</span>
+            <span class="breadcrumb-current">Оформление заказа</span>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="checkout-header">
+            <h1 class="checkout-title">💳 Оформление заказа</h1>
+            <div class="checkout-steps">
+                <div class="step active">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Контактные данные</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Подтверждение</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Готово</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-content">
+            <!-- Форма заказа -->
+            <div class="checkout-form-section">
+                <div class="form-card">
+                    <h2>📋 Контактные данные</h2>
+                    
+                    <form method="post" class="checkout-form">
+                        {% csrf_token %}
+                        
+                        <div class="form-section">
+                            <h3>Личная информация</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="form-error">{{ form.first_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="form-error">{{ form.last_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="form-error">{{ form.phone.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-help">Например: +7 (999) 123-45-67</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>Адрес доставки</h3>
+                            <div class="form-group">
+                                <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="form-error">{{ form.address.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-help">Укажите полный адрес доставки</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <a href="{% url 'appProducts:cart' %}" class="btn btn-secondary">
+                                ← Назад в корзину
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                ✅ Подтвердить заказ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Итоги заказа -->
+            <div class="checkout-summary">
+                <div class="summary-card">
+                    <h2>📦 Ваш заказ</h2>
+                    
+                    <div class="order-items">
+                        <!-- Здесь будут товары, если передать их в контекст -->
+                        <div class="order-placeholder">
+                            <p>Товары из корзины</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-totals">
+                        <div class="summary-line">
+                            <span>Сумма товаров:</span>
+                            <span>{{ total }} ₽</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Доставка:</span>
+                            <span class="free">Бесплатно</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Итого к оплате:</span>
+                            <span>{{ total }} ₽</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Способы оплаты -->
+                    <div class="payment-methods">
+                        <h3>💳 Способы оплаты</h3>
+                        <div class="payment-options">
+                            <div class="payment-option">
+                                <span class="payment-icon">💳</span>
+                                <span>Банковской картой</span>
+                            </div>
+                            <div class="payment-option">
+                                <span class="payment-icon">💰</span>
+                                <span>Наличными при получении</span>
+                            </div>
+                            <div class="payment-option">
+                                <span class="payment-icon">📱</span>
+                                <span>Электронными деньгами</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Гарантии -->
+                    <div class="checkout-guarantees">
+                        <div class="guarantee">
+                            <span class="guarantee-icon">🔒</span>
+                            <span>Безопасная оплата</span>
+                        </div>
+                        <div class="guarantee">
+                            <span class="guarantee-icon">🚚</span>
+                            <span>Быстрая доставка</span>
+                        </div>
+                        <div class="guarantee">
+                            <span class="guarantee-icon">🔄</span>
+                            <span>Гарантия возврата</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

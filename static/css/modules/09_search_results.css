@@ -1,0 +1,152 @@
+.search-results-section {
+    background: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Используем стандартную сетку товаров для результатов поиска */
+.search-results-section .products-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+}
+
+/* Специфичные стили для карточек в результатах поиска */
+.search-results-section .product-card-modern {
+    background: var(--color-white);
+    border-radius: var(--border-radius-xl);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all var(--transition-smooth);
+    position: relative;
+    border: 1px solid var(--color-gray-100);
+    display: flex;
+    flex-direction: column;
+}
+
+.search-results-section .product-card-modern:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-primary-light);
+}
+
+/* Стили для цены в результатах поиска */
+.search-results-section .product-price-modern {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.search-results-section .product-price-modern .price-value {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.search-results-section .product-price-modern .price-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    font-weight: 500;
+}
+
+/* Глобальные стили для product-price-modern (если они отсутствуют) */
+.product-price-modern {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.price-value {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.price-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    font-weight: 500;
+}
+
+/* Responsive стили для результатов поиска */
+@media (max-width: 1024px) {
+    .search-results-section .products-grid-modern {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .search-results-section .products-grid-modern {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .search-results-section .product-content-modern {
+        padding: var(--spacing-lg);
+    }
+    
+    .search-results-section .product-footer-modern {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-sm);
+    }
+    
+    .search-results-section .product-actions-modern {
+        gap: var(--spacing-xs);
+    }
+}
+
+@media (max-width: 480px) {
+    .search-results-section .products-grid-modern {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .search-results-section .product-badges-modern {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+/* Заголовки результатов поиска */
+.search-results-header {
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.search-results-header h2 {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.search-results-header p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-base);
+}
+
+/* Стили для "Ничего не найдено" */
+.no-results {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    color: var(--color-gray-500);
+}
+
+.no-results-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-xl);
+    opacity: 0.5;
+}
+
+.no-results h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-gray-700);
+}

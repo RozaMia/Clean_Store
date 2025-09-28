@@ -1,0 +1,155 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Clean Store{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style-modular.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <!-- Верхняя полоса -->
+        <div class="header-top">
+            <div class="container">
+                <div class="header-info">
+                    <span>📞 8 800 123 45 67</span>
+                    <span>📧 info@cleanstore.ru</span>
+                    <span>🚚 Бесплатная доставка от 2000 ₽</span>
+                </div>
+                <div class="header-actions">
+                    <a href="{% url 'appProducts:contact' %}">Помощь</a>
+                    <a href="{% url 'appProducts:contact' %}">Возврат</a>
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}">Для бизнеса</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Основная шапка -->
+        <div class="header-main">
+            <div class="container">
+                <div class="header-content">
+                    <!-- Логотип -->
+                    <a href="{% url 'home' %}" class="logo">
+                        <span class="logo-icon">🛍️</span>
+                        Clean Store
+                    </a>
+                    
+                    <!-- Поиск -->
+                    <div class="search-container">
+                        <form class="search-form" method="get" action="{% url 'appProducts:category_list' %}">
+                            <input type="text" name="search" class="search-input" 
+                                   placeholder="Поиск товаров..." value="{{ request.GET.search }}">
+                            <button type="submit" class="search-btn">
+                                🔍 Найти
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Навигация -->
+                    <nav class="nav">
+                        <a href="{% url 'appProducts:category_list' %}" class="nav-link">
+                            📋 Каталог
+                        </a>
+                        <a href="{% url 'appProducts:all_products' %}" class="nav-link">
+                            🛍️ Все товары
+                        </a>
+                        <a href="{% url 'appProducts:contact' %}" class="nav-link">
+                            📞 Контакты
+                        </a>
+                    </nav>
+                    
+                    <!-- Пользователь и корзина -->
+                    <div class="header-user">
+                        {% if user.is_authenticated %}
+                            <div class="user-menu">
+                                <span class="user-link">👤 {{ user.username }}</span>
+                                <form method="post" action="{% url 'custom_logout' %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="user-link logout-btn">Выход</button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="user-menu">
+                                <a href="{% url 'login' %}" class="user-link">Вход</a>
+                                <a href="{% url 'register' %}" class="user-link">Регистрация</a>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Корзина -->
+                        <a href="{% url 'appProducts:cart' %}" class="cart-link">
+                            <span class="cart-icon">🛒</span>
+                            Корзина
+                            <!-- TODO: Добавить счетчик товаров в корзине -->
+                            <span class="cart-count" style="display: none;">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Сообщения -->
+        {% if messages %}
+            <div class="container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Товары</h3>
+                    <ul>
+                        <li><a href="{% url 'appProducts:category_list' %}?search=химия">Бытовая химия</a></li>
+                        <li><a href="{% url 'appProducts:category_list' %}?search=швабра">Швабры и метлы</a></li>
+                        <li><a href="{% url 'appProducts:category_list' %}?search=контейнер">Контейнеры</a></li>
+                        <li><a href="{% url 'appProducts:category_list' %}?search=губка">Губки и щётки</a></li>
+                        <li><a href="{% url 'appProducts:category_list' %}?search=ведро">Ведра и тазы</a></li>
+                        <li><a href="{% url 'appProducts:category_list' %}?search=перчатки">Перчатки</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Режим работы</h3>
+                    <ul>
+                        <li><strong>Пн–Пт:</strong> 9:00 – 20:00</li>
+                        <li><strong>Сб–Вс:</strong> 10:00 – 18:00</li>
+                        <li><strong>Доставка:</strong> Ежедневно</li>
+                        <li><strong>Онлайн заказы:</strong> 24/7</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li><a href="tel:+78001234567">📞 8 800 123 45 67</a></li>
+                        <li><a href="mailto:info@cleanstore.ru">📧 info@cleanstore.ru</a></li>
+                        <li>📍 Москва, ул. Чистая, д. 10</li>
+                        <li><a href="{% url 'appProducts:contact' %}">💬 Форма обратной связи</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ООО «Clean Store» — товары для уборки и чистоты дома.</p>
+                <p>Делаем ваш дом чище каждый день! 🧽✨</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

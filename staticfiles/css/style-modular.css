@@ -1,0 +1,20 @@
+
+@import url('modules/01_reset & base.css');
+@import url('modules/02_Color.css');
+@import url('modules/03_base_styles.css');
+@import url('modules/04_header.css');
+@import url('modules/05_main.css');
+@import url('modules/06_footer.css');
+@import url('modules/07_home_page.css');
+@import url('modules/08_catalog_page.css');
+@import url('modules/09_search_results.css');
+@import url('modules/10_subcategory_page.css');
+@import url('modules/11_product_detail_page.css');
+@import url('modules/12_cart_page.css');
+@import url('modules/13_checkout_page.css');
+@import url('modules/14_contact_page.css');
+@import url('modules/15_auth_pages.css');
+@import url('modules/16_logout_page.css');
+@import url('modules/17_product_page_styles.css');
+@import url('modules/18_basket.css');
+@import url('modules/19_all_products_page.css');
