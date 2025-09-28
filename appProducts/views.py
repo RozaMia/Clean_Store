@@ -101,6 +101,24 @@ def all_products(request):
     if category_filter:
         subcategories = subcategories.filter(category__slug=category_filter)
     
+    # Получаем названия выбранных фильтров для отображения
+    current_category_name = None
+    current_subcategory_name = None
+    
+    if category_filter:
+        try:
+            current_category_obj = categories.get(slug=category_filter)
+            current_category_name = current_category_obj.title
+        except Category.DoesNotExist:
+            pass
+    
+    if subcategory_filter:
+        try:
+            current_subcategory_obj = subcategories.get(slug=subcategory_filter)
+            current_subcategory_name = current_subcategory_obj.title
+        except Subcategory.DoesNotExist:
+            pass
+    
     context = {
         'page_obj': page_obj,
         'products': page_obj,
@@ -108,6 +126,8 @@ def all_products(request):
         'subcategories': subcategories,
         'current_category': category_filter,
         'current_subcategory': subcategory_filter,
+        'current_category_name': current_category_name,
+        'current_subcategory_name': current_subcategory_name,
         'current_sort': sort_by,
         'search_query': search_query,
         'total_products': products.count(),

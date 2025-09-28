@@ -22,71 +22,98 @@
             </div>
         </div>
 
-        <!-- Фильтры и сортировка -->
-        <div class="filters-section-modern">
-            <div class="filters-header">
-                <h2 class="filters-title">Фильтры и сортировка</h2>
-                <p class="filters-subtitle">Настройте отображение товаров по вашим предпочтениям</p>
-            </div>
+        <!-- Компактные фильтры и сортировка -->
+        <div class="filters-toolbar">
+            <form method="get" class="filters-form-compact">
+                <!-- Поиск -->
+                <div class="filter-item search-filter">
+                    <div class="search-container">
+                        <input type="text" name="search" value="{{ search_query }}" 
+                               placeholder="🔍 Поиск товаров..." class="search-input-compact">
+                        <button type="submit" class="search-btn-compact" title="Найти">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Категории -->
+                <div class="filter-item">
+                    <label class="filter-label">Категория:</label>
+                    <select name="category" class="filter-select-compact" onchange="this.form.submit()">
+                        <option value="">Все</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}" 
+                                    {% if current_category == category.slug %}selected{% endif %}>
+                                {{ category.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Подкатегории -->
+                <div class="filter-item">
+                    <label class="filter-label">Подкатегория:</label>
+                    <select name="subcategory" class="filter-select-compact" onchange="this.form.submit()">
+                        <option value="">Все</option>
+                        {% for subcategory in subcategories %}
+                            <option value="{{ subcategory.slug }}" 
+                                    {% if current_subcategory == subcategory.slug %}selected{% endif %}>
+                                {{ subcategory.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Сортировка -->
+                <div class="filter-item">
+                    <label class="filter-label">Сортировка:</label>
+                    <select name="sort" class="filter-select-compact" onchange="this.form.submit()">
+                        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>По названию</option>
+                        <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Цена ↑</option>
+                        <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Цена ↓</option>
+                        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Новые</option>
+                        <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Популярные</option>
+                    </select>
+                </div>
+
+                <!-- Кнопки действий -->
+                <div class="filter-actions-compact">
+                    <button type="submit" class="apply-btn-compact" title="Применить фильтры">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20,6 9,17 4,12"/>
+                        </svg>
+                    </button>
+                    <a href="{% url 'appProducts:all_products' %}" class="clear-btn-compact" title="Сбросить фильтры">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                        </svg>
+                    </a>
+                </div>
+            </form>
             
-            <div class="filters-container">
-                <form method="get" class="filters-form">
-                    <!-- Поиск -->
-                    <div class="filter-group">
-                        <h3 class="filter-group-title">Поиск</h3>
-                        <div class="search-input-group">
-                            <input type="text" name="search" value="{{ search_query }}" 
-                                   placeholder="Поиск товаров..." class="search-input">
-                            <button type="submit" class="search-btn">🔍</button>
-                        </div>
-                    </div>
-
-                    <!-- Категории -->
-                    <div class="filter-group">
-                        <h3 class="filter-group-title">Категория</h3>
-                        <select name="category" class="filter-select" onchange="this.form.submit()">
-                            <option value="">Все категории</option>
-                            {% for category in categories %}
-                                <option value="{{ category.slug }}" 
-                                        {% if current_category == category.slug %}selected{% endif %}>
-                                    {{ category.title }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <!-- Подкатегории -->
-                    <div class="filter-group">
-                        <h3 class="filter-group-title">Подкатегория</h3>
-                        <select name="subcategory" class="filter-select" onchange="this.form.submit()">
-                            <option value="">Все подкатегории</option>
-                            {% for subcategory in subcategories %}
-                                <option value="{{ subcategory.slug }}" 
-                                        {% if current_subcategory == subcategory.slug %}selected{% endif %}>
-                                    {{ subcategory.title }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <!-- Сортировка -->
-                    <div class="filter-group">
-                        <h3 class="filter-group-title">Сортировка</h3>
-                        <select name="sort" class="filter-select" onchange="this.form.submit()">
-                            <option value="name" {% if current_sort == 'name' %}selected{% endif %}>По названию</option>
-                            <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Цена: по возрастанию</option>
-                            <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
-                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Сначала новые</option>
-                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>По популярности</option>
-                        </select>
-                    </div>
-
-                    <!-- Кнопки действий -->
-                    <div class="filter-actions">
-                        <button type="submit" class="apply-filters-btn">Применить фильтры</button>
-                        <a href="{% url 'appProducts:all_products' %}" class="clear-filters-btn">Сбросить</a>
-                    </div>
-                </form>
+            <!-- Информация о результатах -->
+            <div class="results-info">
+                <span class="results-count">{{ total_products }} товар{{ total_products|pluralize:"ов" }}</span>
+                {% if search_query or current_category or current_subcategory %}
+                    <span class="active-filters">
+                        {% if search_query %}
+                            <span class="filter-tag">Поиск: "{{ search_query }}"</span>
+                        {% endif %}
+                        {% if current_category_name %}
+                            <span class="filter-tag">{{ current_category_name }}</span>
+                        {% endif %}
+                        {% if current_subcategory_name %}
+                            <span class="filter-tag">{{ current_subcategory_name }}</span>
+                        {% endif %}
+                    </span>
+                {% endif %}
             </div>
         </div>
 
@@ -94,68 +121,104 @@
         {% if products %}
             <div class="products-grid-modern">
                 {% for product in products %}
-                    <div class="product-card catalog-card" data-product-id="{{ product.id }}">
-                        <div class="product-image-container">
-                            {% if product.images.first %}
-                                <img src="{{ product.images.first.image.url }}" 
-                                     alt="{{ product.name }}" 
-                                     class="product-image">
-                            {% else %}
-                                <div class="product-image-placeholder">
-                                    <span class="placeholder-icon">📦</span>
+                    <article class="product-card-modern" data-product-id="{{ product.id }}">
+                        <div class="product-image-wrapper">
+                            <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="product-link">
+                                {% if product.images.first %}
+                                    <img src="{{ product.images.first.image.url }}" 
+                                         alt="{{ product.name }}" 
+                                         class="product-image-modern"
+                                         loading="lazy">
+                                {% else %}
+                                    <div class="product-image-placeholder-modern">
+                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M20 7h-3V6a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v11a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4v-1h3a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM7 4h6a2 2 0 0 1 2 2v1H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm10 16H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h8v11a4 4 0 0 0 4 4v1a2 2 0 0 1-2 2zm3-3h-2a2 2 0 0 1-2-2V9h4v8z"/>
+                                        </svg>
+                                        <span>Нет изображения</span>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Бейджи товара -->
+                                <div class="product-badges-modern">
+                                    {% if product.is_new %}
+                                        <span class="product-badge-modern new">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                            </svg>
+                                            Новинка
+                                        </span>
+                                    {% endif %}
+                                    {% if product.is_hit %}
+                                        <span class="product-badge-modern hit">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M8.5 2v4.5L12 4l3.5 2.5V2h4v20l-7.5-5L4.5 22V2h4z"/>
+                                            </svg>
+                                            Хит
+                                        </span>
+                                    {% endif %}
+                                    {% if product.is_sale %}
+                                        <span class="product-badge-modern sale">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                            </svg>
+                                            Скидка
+                                        </span>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
+                            </a>
                             
-                            <!-- Бейджи товара -->
-                            <div class="product-badges">
-                                {% if product.is_new %}
-                                    <span class="product-badge new">Новинка</span>
-                                {% endif %}
-                                {% if product.is_hit %}
-                                    <span class="product-badge hit">Хит</span>
-                                {% endif %}
-                                {% if product.is_sale %}
-                                    <span class="product-badge sale">Скидка</span>
-                                {% endif %}
+                            <!-- Быстрые действия -->
+                            <div class="product-actions-overlay">
+                                <button class="action-btn-modern wishlist" onclick="toggleWishlist({{ product.id }}, this)" title="В избранное">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                    </svg>
+                                </button>
+                                <button class="action-btn-modern compare" onclick="toggleCompare({{ product.id }}, this)" title="Сравнить">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 6l6 6-6 6"/>
+                                        <path d="M3 6l6 6-6 6"/>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
-                        <div class="product-content">
-                            <div class="product-category">
-                                <span class="category-icon">📁</span>
-                                <span class="category-path">{{ product.subcategory.category.title }} → {{ product.subcategory.title }}</span>
+                        <div class="product-content-modern">
+                            <div class="product-category-modern">
+                                <span class="category-text">{{ product.subcategory.category.title }}</span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m9 18 6-6-6-6"/>
+                                </svg>
+                                <span class="subcategory-text">{{ product.subcategory.title }}</span>
                             </div>
                             
-                            <h3 class="product-name">
+                            <h3 class="product-title-modern">
                                 <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}">
                                     {{ product.name }}
                                 </a>
                             </h3>
                             
-                            <div class="product-description">
-                                <p>{{ product.description|truncatewords:15 }}</p>
-                            </div>
+                            <p class="product-description-modern">{{ product.description|truncatewords:12 }}</p>
                             
-                            <div class="product-price">
-                                <span class="price-current">{{ product.price|currency }}</span>
-                            </div>
-                            
-                            <div class="product-actions">
-                                <button class="action-btn wishlist-btn" onclick="toggleWishlist({{ product.id }})" title="В избранное">
-                                    <span class="action-icon">❤️</span>
-                                </button>
-                                <button class="action-btn compare-btn" onclick="toggleCompare({{ product.id }})" title="Сравнить">
-                                    <span class="action-icon">📌</span>
-                                </button>
-                                <button class="action-btn quick-view-btn" onclick="quickView({{ product.id }})" title="Быстрый просмотр">
-                                    <span class="action-icon">👁️</span>
-                                </button>
-                                <a href="{% url 'appProducts:add_to_cart' product.id %}" class="add-to-cart-btn" title="В корзину">
-                                    <span class="action-icon">🛒</span>
-                                </a>
+                            <div class="product-footer-modern">
+                                <div class="product-price-modern">
+                                    <span class="price-value">{{ product.price|currency }}</span>
+                                    <span class="price-label">за шт.</span>
+                                </div>
+                                
+                                <div class="product-actions-modern">
+                                    <button class="add-to-cart-btn-modern" onclick="addToCart({{ product.id }}, this)" title="В корзину">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="8" cy="21" r="1"/>
+                                            <circle cx="19" cy="21" r="1"/>
+                                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                        </svg>
+                                        В корзину
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
             </div>
 
@@ -234,21 +297,78 @@ function formatNumber(num) {
 }
 
 // Переключение избранного
-function toggleWishlist(productId) {
-    // Здесь будет логика добавления/удаления из избранного
-    showNotification('Товар добавлен в избранное', 'success');
+function toggleWishlist(productId, element) {
+    element.classList.toggle('active');
+    
+    const isActive = element.classList.contains('active');
+    element.style.transform = 'scale(0.8)';
+    
+    setTimeout(() => {
+        element.style.transform = 'scale(1.1)';
+        
+        if (isActive) {
+            showNotification('Товар добавлен в избранное!', 'success');
+        } else {
+            showNotification('Товар удален из избранного', 'info');
+        }
+    }, 100);
+    
+    console.log('Избранное:', productId, isActive ? 'добавлен' : 'удален');
 }
 
 // Переключение сравнения
-function toggleCompare(productId) {
-    // Здесь будет логика добавления/удаления из сравнения
-    showNotification('Товар добавлен к сравнению', 'info');
+function toggleCompare(productId, element) {
+    element.classList.toggle('active');
+    
+    const isActive = element.classList.contains('active');
+    element.style.transform = 'scale(0.8)';
+    
+    setTimeout(() => {
+        element.style.transform = 'scale(1.1)';
+        
+        if (isActive) {
+            showNotification('Товар добавлен к сравнению!', 'success');
+        } else {
+            showNotification('Товар удален из сравнения', 'info');
+        }
+    }, 100);
+    
+    console.log('Сравнение:', productId, isActive ? 'добавлен' : 'удален');
 }
 
-// Быстрый просмотр
-function quickView(productId) {
-    // Здесь будет логика быстрого просмотра
-    showNotification('Быстрый просмотр товара', 'info');
+// Добавление в корзину
+function addToCart(productId, element) {
+    const originalText = element.innerHTML;
+    
+    // Анимация загрузки
+    element.innerHTML = `
+        <div class="loading-spinner"></div>
+        Добавляем...
+    `;
+    element.disabled = true;
+    element.style.transform = 'scale(0.95)';
+    
+    // Имитация запроса
+    setTimeout(() => {
+        element.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"/>
+            </svg>
+            Добавлено!
+        `;
+        element.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+        
+        setTimeout(() => {
+            element.innerHTML = originalText;
+            element.disabled = false;
+            element.style.background = 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))';
+            element.style.transform = 'scale(1)';
+        }, 2000);
+        
+        showNotification('Товар добавлен в корзину!', 'success');
+    }, 1000);
+    
+    console.log('Добавить в корзину:', productId);
 }
 
 // Обновление состояния кнопок
@@ -262,6 +382,30 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
+    
+    // Добавляем стили для спиннера загрузки если их еще нет
+    if (!document.getElementById('loading-spinner-styles')) {
+        const style = document.createElement('style');
+        style.id = 'loading-spinner-styles';
+        style.textContent = `
+            .loading-spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-top: 2px solid white;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                display: inline-block;
+                margin-right: 8px;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
     
     // Добавляем стили
     notification.style.cssText = `

@@ -210,133 +210,250 @@
             </div>
         </section>
 
-        <!-- Похожие товары -->
-        <section class="related-products-modern">
-            <div class="related-header">
-                <h2>💡 Похожие товары</h2>
-                <p>Товары из той же категории, которые могут вас заинтересовать</p>
-            </div>
-            
-            <div class="related-products-grid">
-                <!-- Моковые данные похожих товаров -->
-                <div class="related-product-card" data-product-id="101">
-                    <div class="related-product-image">
-                        <div class="product-image-placeholder">
-                            <span class="placeholder-emoji">🧽</span>
-                        </div>
-                        <div class="related-product-badges">
-                            <span class="related-badge hit">🔥 ХИТ</span>
-                        </div>
-                        <div class="related-product-actions">
-                            <button class="related-action-btn wishlist" onclick="toggleWishlist(101, this)" title="В избранное">❤️</button>
-                            <button class="related-action-btn compare" onclick="toggleCompare(101, this)" title="Сравнить">⚖️</button>
-                        </div>
+        <!-- Похожие товары - Новый дизайн -->
+        <section class="related-products-section">
+            <div class="container">
+                <div class="section-header-modern">
+                    <div class="section-title-wrapper">
+                        <span class="section-icon">🎯</span>
+                        <h2 class="section-title-modern">Похожие товары</h2>
                     </div>
-                    <div class="related-product-info">
-                        <h4 class="related-product-name">Профессиональная губка для мытья посуды</h4>
-                        <p class="related-product-category">{{ product.subcategory.title }}</p>
-                        <div class="related-product-price">299 ₽</div>
-                        <div class="related-product-rating">
-                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
-                            <span class="rating-count">(24)</span>
-                        </div>
-                        <a href="#" class="related-product-link">
-                            <span class="link-text">Подробнее</span>
-                            <span class="link-arrow">→</span>
-                        </a>
+                    <p class="section-subtitle">Товары из той же категории, которые могут вас заинтересовать</p>
+                    <div class="section-navigation">
+                        <button class="nav-btn prev-btn" onclick="scrollRelatedProducts('left')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m15 18-6-6 6-6"/>
+                            </svg>
+                        </button>
+                        <button class="nav-btn next-btn" onclick="scrollRelatedProducts('right')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m9 18 6-6-6-6"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 
-                <div class="related-product-card" data-product-id="102">
-                    <div class="related-product-image">
-                        <div class="product-image-placeholder">
-                            <span class="placeholder-emoji">🧴</span>
-                        </div>
-                        <div class="related-product-badges">
-                            <span class="related-badge new">✨ НОВИНКА</span>
-                        </div>
-                        <div class="related-product-actions">
-                            <button class="related-action-btn wishlist" onclick="toggleWishlist(102, this)" title="В избранное">❤️</button>
-                            <button class="related-action-btn compare" onclick="toggleCompare(102, this)" title="Сравнить">⚖️</button>
-                        </div>
-                    </div>
-                    <div class="related-product-info">
-                        <h4 class="related-product-name">Концентрированное средство для уборки</h4>
-                        <p class="related-product-category">{{ product.subcategory.title }}</p>
-                        <div class="related-product-price">450 ₽</div>
-                        <div class="related-product-rating">
-                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
-                            <span class="rating-count">(18)</span>
-                        </div>
-                        <a href="#" class="related-product-link">
-                            <span class="link-text">Подробнее</span>
-                            <span class="link-arrow">→</span>
-                        </a>
+                <div class="related-products-container">
+                    <div class="related-products-slider" id="relatedProductsSlider">
+                        <!-- Карточка товара 1 -->
+                        <article class="product-card-modern" data-product-id="101">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <div class="product-image-placeholder">
+                                        <span class="placeholder-emoji">🧽</span>
+                                    </div>
+                                </div>
+                                <div class="product-badges">
+                                    <span class="product-badge hit">🔥 ХИТ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="product-content">
+                                <div class="product-category-tag">{{ product.subcategory.title }}</div>
+                                <h3 class="product-title">Профессиональная губка для мытья посуды</h3>
+                                
+                                <div class="product-rating-modern">
+                                    <div class="rating-stars-modern">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                    <span class="rating-text">5.0 (24 отзыва)</span>
+                                </div>
+                                
+                                <div class="product-price-container">
+                                    <span class="product-price">299 ₽</span>
+                                    <span class="price-unit">за шт.</span>
+                                </div>
+                                
+                                <div class="product-actions">
+                                    <button class="add-to-cart-btn" onclick="addToCart(101)">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="8" cy="21" r="1"/>
+                                            <circle cx="19" cy="21" r="1"/>
+                                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                        </svg>
+                                        В корзину
+                                    </button>
+                                    <a href="#" class="view-details-btn">
+                                        Подробнее
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m9 18 6-6-6-6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <!-- Карточка товара 2 -->
+                        <article class="product-card-modern" data-product-id="102">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <div class="product-image-placeholder">
+                                        <span class="placeholder-emoji">🧴</span>
+                                    </div>
+                                </div>
+                                <div class="product-badges">
+                                    <span class="product-badge new">✨ НОВИНКА</span>
+                                </div>
+                            </div>
+                            
+                            <div class="product-content">
+                                <div class="product-category-tag">{{ product.subcategory.title }}</div>
+                                <h3 class="product-title">Концентрированное средство для уборки</h3>
+                                
+                                <div class="product-rating-modern">
+                                    <div class="rating-stars-modern">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                    <span class="rating-text">5.0 (18 отзывов)</span>
+                                </div>
+                                
+                                <div class="product-price-container">
+                                    <span class="product-price">450 ₽</span>
+                                    <span class="price-unit">за шт.</span>
+                                </div>
+                                
+                                <div class="product-actions">
+                                    <button class="add-to-cart-btn" onclick="addToCart(102)">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="8" cy="21" r="1"/>
+                                            <circle cx="19" cy="21" r="1"/>
+                                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                        </svg>
+                                        В корзину
+                                    </button>
+                                    <a href="#" class="view-details-btn">
+                                        Подробнее
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m9 18 6-6-6-6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <!-- Карточка товара 3 -->
+                        <article class="product-card-modern" data-product-id="103">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <div class="product-image-placeholder">
+                                        <span class="placeholder-emoji">🧹</span>
+                                    </div>
+                                </div>
+                                <div class="product-badges">
+                                    <span class="product-badge sale">💰 СКИДКА</span>
+                                </div>
+                            </div>
+                            
+                            <div class="product-content">
+                                <div class="product-category-tag">{{ product.subcategory.title }}</div>
+                                <h3 class="product-title">Швабра с микрофиброй для идеальной уборки</h3>
+                                
+                                <div class="product-rating-modern">
+                                    <div class="rating-stars-modern">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star">★</span>
+                                    </div>
+                                    <span class="rating-text">4.0 (15 отзывов)</span>
+                                </div>
+                                
+                                <div class="product-price-container">
+                                    <span class="product-price-old">890 ₽</span>
+                                    <span class="product-price sale">690 ₽</span>
+                                    <span class="discount-badge">-22%</span>
+                                </div>
+                                
+                                <div class="product-actions">
+                                    <button class="add-to-cart-btn" onclick="addToCart(103)">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="8" cy="21" r="1"/>
+                                            <circle cx="19" cy="21" r="1"/>
+                                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                        </svg>
+                                        В корзину
+                                    </button>
+                                    <a href="#" class="view-details-btn">
+                                        Подробнее
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m9 18 6-6-6-6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                        
+                        <!-- Карточка товара 4 -->
+                        <article class="product-card-modern" data-product-id="104">
+                            <div class="product-image-container">
+                                <div class="product-image-wrapper">
+                                    <div class="product-image-placeholder">
+                                        <span class="placeholder-emoji">🧤</span>
+                                    </div>
+                                </div>
+                                <div class="product-badges">
+                                    <span class="product-badge eco">🌱 ЭКО</span>
+                                </div>
+                            </div>
+                            
+                            <div class="product-content">
+                                <div class="product-category-tag">{{ product.subcategory.title }}</div>
+                                <h3 class="product-title">Перчатки для уборки повышенной прочности</h3>
+                                
+                                <div class="product-rating-modern">
+                                    <div class="rating-stars-modern">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                    <span class="rating-text">5.0 (31 отзыв)</span>
+                                </div>
+                                
+                                <div class="product-price-container">
+                                    <span class="product-price">150 ₽</span>
+                                    <span class="price-unit">за пару</span>
+                                </div>
+                                
+                                <div class="product-actions">
+                                    <button class="add-to-cart-btn" onclick="addToCart(104)">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="8" cy="21" r="1"/>
+                                            <circle cx="19" cy="21" r="1"/>
+                                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                        </svg>
+                                        В корзину
+                                    </button>
+                                    <a href="#" class="view-details-btn">
+                                        Подробнее
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m9 18 6-6-6-6"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
                     </div>
                 </div>
                 
-                <div class="related-product-card" data-product-id="103">
-                    <div class="related-product-image">
-                        <div class="product-image-placeholder">
-                            <span class="placeholder-emoji">🧹</span>
-                        </div>
-                        <div class="related-product-badges">
-                            <span class="related-badge sale">💰 СКИДКА</span>
-                        </div>
-                        <div class="related-product-actions">
-                            <button class="related-action-btn wishlist" onclick="toggleWishlist(103, this)" title="В избранное">❤️</button>
-                            <button class="related-action-btn compare" onclick="toggleCompare(103, this)" title="Сравнить">⚖️</button>
-                        </div>
-                    </div>
-                    <div class="related-product-info">
-                        <h4 class="related-product-name">Швабра с микрофиброй для идеальной уборки</h4>
-                        <p class="related-product-category">{{ product.subcategory.title }}</p>
-                        <div class="related-product-price">
-                            <span class="price-old">890 ₽</span>
-                            <span class="price-current">690 ₽</span>
-                        </div>
-                        <div class="related-product-rating">
-                            <div class="rating-stars">⭐⭐⭐⭐</div>
-                            <span class="rating-count">(12)</span>
-                        </div>
-                        <a href="#" class="related-product-link">
-                            <span class="link-text">Подробнее</span>
-                            <span class="link-arrow">→</span>
-                        </a>
-                    </div>
+                <div class="section-footer">
+                    <a href="{% url 'appProducts:product_list' product.subcategory.category.slug product.subcategory.slug %}" class="view-all-btn-modern">
+                        <span class="btn-text">Смотреть все товары в категории</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </a>
                 </div>
-                
-                <div class="related-product-card" data-product-id="104">
-                    <div class="related-product-image">
-                        <div class="product-image-placeholder">
-                            <span class="placeholder-emoji">🧤</span>
-                        </div>
-                        <div class="related-product-actions">
-                            <button class="related-action-btn wishlist" onclick="toggleWishlist(104, this)" title="В избранное">❤️</button>
-                            <button class="related-action-btn compare" onclick="toggleCompare(104, this)" title="Сравнить">⚖️</button>
-                        </div>
-                    </div>
-                    <div class="related-product-info">
-                        <h4 class="related-product-name">Перчатки для уборки повышенной прочности</h4>
-                        <p class="related-product-category">{{ product.subcategory.title }}</p>
-                        <div class="related-product-price">150 ₽</div>
-                        <div class="related-product-rating">
-                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
-                            <span class="rating-count">(31)</span>
-                        </div>
-                        <a href="#" class="related-product-link">
-                            <span class="link-text">Подробнее</span>
-                            <span class="link-arrow">→</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="related-footer">
-                <a href="{% url 'appProducts:product_list' product.subcategory.category.slug product.subcategory.slug %}" class="view-all-related">
-                    <span class="view-all-text">Смотреть все товары в категории</span>
-                    <span class="view-all-arrow">→</span>
-                </a>
             </div>
         </section>
     </div>
@@ -345,6 +462,181 @@
 <!-- Модернизированный JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // ===== СЛАЙДЕР ПОХОЖИХ ТОВАРОВ =====
+    const relatedProductsSlider = document.getElementById('relatedProductsSlider');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    
+    if (relatedProductsSlider && prevBtn && nextBtn) {
+        const cardWidth = 320 + 24; // ширина карточки + gap
+        let currentPosition = 0;
+        const maxScroll = relatedProductsSlider.scrollWidth - relatedProductsSlider.clientWidth;
+        
+        // Функция прокрутки
+        function scrollRelatedProducts(direction) {
+            const scrollAmount = cardWidth * 2; // прокручиваем на 2 карточки
+            
+            if (direction === 'left') {
+                currentPosition = Math.max(0, currentPosition - scrollAmount);
+            } else {
+                currentPosition = Math.min(maxScroll, currentPosition + scrollAmount);
+            }
+            
+            relatedProductsSlider.scrollTo({
+                left: currentPosition,
+                behavior: 'smooth'
+            });
+            
+            // Обновляем состояние кнопок
+            updateNavigationButtons();
+        }
+        
+        // Обновление состояния кнопок навигации
+        function updateNavigationButtons() {
+            prevBtn.style.opacity = currentPosition <= 0 ? '0.5' : '1';
+            prevBtn.style.pointerEvents = currentPosition <= 0 ? 'none' : 'auto';
+            
+            nextBtn.style.opacity = currentPosition >= maxScroll ? '0.5' : '1';
+            nextBtn.style.pointerEvents = currentPosition >= maxScroll ? 'none' : 'auto';
+        }
+        
+        // Обработчики событий
+        prevBtn.addEventListener('click', () => scrollRelatedProducts('left'));
+        nextBtn.addEventListener('click', () => scrollRelatedProducts('right'));
+        
+        // Обновляем позицию при скролле мышью
+        relatedProductsSlider.addEventListener('scroll', function() {
+            currentPosition = this.scrollLeft;
+            updateNavigationButtons();
+        });
+        
+        // Инициализация
+        updateNavigationButtons();
+        
+        // Поддержка touch для мобильных устройств
+        let startX = 0;
+        let scrollLeft = 0;
+        
+        relatedProductsSlider.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].pageX - this.offsetLeft;
+            scrollLeft = this.scrollLeft;
+        });
+        
+        relatedProductsSlider.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            const x = e.touches[0].pageX - this.offsetLeft;
+            const walk = (x - startX) * 2;
+            this.scrollLeft = scrollLeft - walk;
+        });
+    }
+    
+    // ===== ИНТЕРАКТИВНЫЕ ФУНКЦИИ ТОВАРОВ =====
+    
+    
+    // Добавление в корзину
+    window.addToCart = function(productId) {
+        const btn = event.target.closest('.add-to-cart-btn');
+        const originalText = btn.innerHTML;
+        
+        // Анимация загрузки
+        btn.innerHTML = '<div class="loading-spinner"></div>Добавляем...';
+        btn.disabled = true;
+        btn.style.transform = 'scale(0.95)';
+        
+        // Имитация запроса
+        setTimeout(() => {
+            btn.innerHTML = '✓ Добавлено!';
+            btn.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.background = 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))';
+                btn.style.transform = 'scale(1)';
+            }, 2000);
+            
+            showNotification('Товар добавлен в корзину!', 'success');
+        }, 1000);
+        
+        console.log('Добавить в корзину:', productId);
+    };
+    
+    // Функция уведомлений
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span>
+                <span class="notification-message">${message}</span>
+            </div>
+        `;
+        
+        // Стили для уведомления
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Анимация появления
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Автоматическое удаление
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+    
+    // Стили для спиннера загрузки
+    const style = document.createElement('style');
+    style.textContent = `
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .notification-icon {
+            font-weight: bold;
+            font-size: 18px;
+        }
+    `;
+    document.head.appendChild(style);
+
     // Quantity controls
     const qtyInput = document.getElementById('quantity');
     const minusBtn = document.querySelector('.qty-btn-modern.minus');
