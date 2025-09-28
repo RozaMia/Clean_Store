@@ -465,40 +465,6 @@
     gap: var(--spacing-md);
 }
 
-.action-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
-    border: 2px solid var(--color-gray-300);
-    background: var(--color-white);
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--color-gray-700);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.action-btn:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    transform: translateY(-1px);
-}
-
-.action-btn.wishlist:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-    background: #fef2f2;
-}
-
-.action-btn.compare:hover {
-    border-color: var(--color-warning);
-    color: var(--color-warning);
-    background: #fffbeb;
-}
 
 .action-icon {
     font-size: var(--font-size-md);
@@ -892,36 +858,6 @@
     transform: translateX(0);
 }
 
-.related-action-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: var(--border-radius);
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--color-gray-700);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-sm);
-    backdrop-filter: blur(10px);
-}
-
-.related-action-btn.wishlist:hover,
-.related-action-btn.wishlist.active {
-    background: var(--color-accent);
-    color: var(--color-white);
-    transform: scale(1.1);
-}
-
-.related-action-btn.compare:hover,
-.related-action-btn.compare.active {
-    background: var(--color-warning);
-    color: var(--color-white);
-    transform: scale(1.1);
-}
 
 /* Информация о похожем товаре */
 .related-product-info {

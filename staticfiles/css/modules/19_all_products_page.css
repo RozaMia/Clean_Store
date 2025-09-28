@@ -482,80 +482,54 @@
     font-weight: 500;
 }
 
-/* Кнопки действий */
-.product-actions-modern {
+/* Кнопка добавления в корзину */
+.add-to-cart-btn-modern {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    flex-wrap: nowrap;
-    min-width: 120px;
-}
-
-.add-to-cart-btn-modern,
-.login-btn-modern,
-.view-product-btn-modern {
-    display: inline-flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
     border: none;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    text-decoration: none;
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
     white-space: nowrap;
-    justify-content: center;
-    min-width: 80px;
-    text-align: center;
 }
 
-/* Кнопка "Посмотреть товар" */
-.view-product-btn-modern {
-    background: linear-gradient(135deg, var(--color-secondary), #6366f1);
-    color: var(--color-white);
-    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+.add-to-cart-btn-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+    transition: left var(--transition-fast);
 }
 
-.view-product-btn-modern:hover {
-    background: linear-gradient(135deg, #4f46e5, var(--color-secondary));
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-    color: var(--color-white);
+.add-to-cart-btn-modern:hover::before {
+    left: 0;
 }
 
-/* Кнопка "В корзину" */
-.add-to-cart-btn-modern {
-    background: linear-gradient(135deg, var(--color-primary), #3b82f6);
-    color: var(--color-white);
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+.add-to-cart-btn-modern svg,
+.add-to-cart-btn-modern span {
+    position: relative;
+    z-index: 1;
 }
 
 .add-to-cart-btn-modern:hover {
-    background: linear-gradient(135deg, #2563eb, var(--color-primary));
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .add-to-cart-btn-modern:active {
     transform: translateY(0);
 }
-
-/* Кнопка "Войти" */
-.login-btn-modern {
-    background: linear-gradient(135deg, var(--color-gray-100), var(--color-gray-200));
-    color: var(--color-gray-700);
-    border: 1px solid var(--color-gray-200);
-}
-
-.login-btn-modern:hover {
-    background: linear-gradient(135deg, var(--color-gray-200), var(--color-gray-300));
-    color: var(--color-gray-900);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 
 /* Пагинация */
 .pagination-modern {
@@ -732,16 +706,9 @@
     }
     
     
-    .add-to-cart-btn-modern,
-    .login-btn-modern,
-    .view-product-btn-modern {
+    .add-to-cart-btn-modern {
         padding: var(--spacing-xs) var(--spacing-sm);
         font-size: var(--font-size-xs);
-    }
-    
-    .product-actions-modern {
-        gap: var(--spacing-xs);
-        flex-direction: column;
     }
     
     .pagination-modern {
@@ -809,14 +776,11 @@
         gap: var(--spacing-sm);
     }
     
-    .add-to-cart-btn-modern,
-    .login-btn-modern,
-    .view-product-btn-modern {
+    .add-to-cart-btn-modern {
         width: 100%;
         justify-content: center;
-        padding: var(--spacing-sm);
-        font-size: var(--font-size-xs);
-        min-width: 70px;
+        padding: var(--spacing-md);
+        font-size: var(--font-size-base);
     }
     
     

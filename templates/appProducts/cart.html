@@ -126,18 +126,6 @@
                                 </div>
                             </div>
                             
-                            <div class="item-actions-modern">
-                                <button class="action-btn-item wishlist" onclick="toggleWishlist({{ item.product.id }}, this)" title="В избранное">
-                                    <span class="action-icon">❤️</span>
-                                </button>
-                                <button class="action-btn-item save-later" onclick="saveForLater({{ item.id }})" title="Сохранить на потом">
-                                    <span class="action-icon">📌</span>
-                                </button>
-                                <a href="{% url 'appProducts:product_detail' item.product.subcategory.category.slug item.product.subcategory.slug item.product.slug %}" 
-                                   class="action-btn-item view-product" title="Посмотреть товар">
-                                    <span class="action-icon">👁️</span>
-                                </a>
-                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -511,10 +499,6 @@ function initPromoCode() {
 }
 
 // Сохранить на потом
-function saveForLater(itemId) {
-    showNotification('Товар сохранен в избранном!', 'success');
-    // Здесь можно добавить логику сохранения в wishlist
-}
 
 // Показ уведомлений
 function showNotification(message, type = 'info') {
@@ -557,23 +541,5 @@ function showNotification(message, type = 'info') {
 }
 
 // Функция переключения избранного (если не определена в других местах)
-if (typeof toggleWishlist !== 'function') {
-    function toggleWishlist(productId, button) {
-        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-        const index = wishlist.indexOf(productId);
-        
-        if (index === -1) {
-            wishlist.push(productId);
-            button.classList.add('active');
-            showNotification('Товар добавлен в избранное! ❤️', 'success');
-        } else {
-            wishlist.splice(index, 1);
-            button.classList.remove('active');
-            showNotification('Товар удален из избранного', 'info');
-        }
-        
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    }
-}
 </script>
 {% endblock %}

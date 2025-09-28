@@ -167,20 +167,6 @@
                                 </div>
                             </a>
                             
-                            <!-- Быстрые действия -->
-                            <div class="product-actions-overlay">
-                                <button class="action-btn-modern wishlist" onclick="toggleWishlist({{ product.id }}, this)" title="В избранное">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn-modern compare" onclick="toggleCompare({{ product.id }}, this)" title="Сравнить">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M9 6l6 6-6 6"/>
-                                        <path d="M3 6l6 6-6 6"/>
-                                    </svg>
-                                </button>
-                            </div>
                         </div>
 
                         <div class="product-content-modern">
@@ -207,14 +193,36 @@
                                 </div>
                                 
                                 <div class="product-actions-modern">
-                                    <button class="add-to-cart-btn-modern" onclick="addToCart({{ product.id }}, this)" title="В корзину">
+                                    <!-- Кнопка "Посмотреть товар" для всех -->
+                                    <a href="{% url 'appProducts:product_detail' product.subcategory.category.slug product.subcategory.slug product.slug %}" class="view-product-btn-modern" title="Посмотреть товар">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="8" cy="21" r="1"/>
-                                            <circle cx="19" cy="21" r="1"/>
-                                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
                                         </svg>
-                                        В корзину
-                                    </button>
+                                        Посмотреть
+                                    </a>
+                                    
+                                    {% if user.is_authenticated %}
+                                        <!-- Кнопка "В корзину" для авторизованных -->
+                                        <button class="add-to-cart-btn-modern" onclick="addToCart({{ product.id }}, this)" title="В корзину">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="8" cy="21" r="1"/>
+                                                <circle cx="19" cy="21" r="1"/>
+                                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                            </svg>
+                                            В корзину
+                                        </button>
+                                    {% else %}
+                                        <!-- Кнопка "Войти" для неавторизованных -->
+                                        <a href="{% url 'login' %}" class="login-btn-modern" title="Войти для покупки">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                                                <polyline points="10,17 15,12 10,7"/>
+                                                <line x1="15" y1="12" x2="3" y2="12"/>
+                                            </svg>
+                                            Войти
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -296,45 +304,6 @@ function formatNumber(num) {
     }
 }
 
-// Переключение избранного
-function toggleWishlist(productId, element) {
-    element.classList.toggle('active');
-    
-    const isActive = element.classList.contains('active');
-    element.style.transform = 'scale(0.8)';
-    
-    setTimeout(() => {
-        element.style.transform = 'scale(1.1)';
-        
-        if (isActive) {
-            showNotification('Товар добавлен в избранное!', 'success');
-        } else {
-            showNotification('Товар удален из избранного', 'info');
-        }
-    }, 100);
-    
-    console.log('Избранное:', productId, isActive ? 'добавлен' : 'удален');
-}
-
-// Переключение сравнения
-function toggleCompare(productId, element) {
-    element.classList.toggle('active');
-    
-    const isActive = element.classList.contains('active');
-    element.style.transform = 'scale(0.8)';
-    
-    setTimeout(() => {
-        element.style.transform = 'scale(1.1)';
-        
-        if (isActive) {
-            showNotification('Товар добавлен к сравнению!', 'success');
-        } else {
-            showNotification('Товар удален из сравнения', 'info');
-        }
-    }, 100);
-    
-    console.log('Сравнение:', productId, isActive ? 'добавлен' : 'удален');
-}
 
 // Добавление в корзину
 function addToCart(productId, element) {
@@ -348,27 +317,69 @@ function addToCart(productId, element) {
     element.disabled = true;
     element.style.transform = 'scale(0.95)';
     
-    // Имитация запроса
-    setTimeout(() => {
-        element.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20,6 9,17 4,12"/>
-            </svg>
-            Добавлено!
-        `;
-        element.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
-        
-        setTimeout(() => {
-            element.innerHTML = originalText;
-            element.disabled = false;
-            element.style.background = 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))';
-            element.style.transform = 'scale(1)';
-        }, 2000);
-        
-        showNotification('Товар добавлен в корзину!', 'success');
-    }, 1000);
-    
-    console.log('Добавить в корзину:', productId);
+    // Реальный запрос к серверу
+    fetch(`/products/add-to-cart/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken')
+        },
+        body: 'quantity=1'
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else if (response.status === 302 || response.status === 401) {
+            // Пользователь не авторизован, перенаправляем на страницу входа
+            window.location.href = '/login/';
+            return;
+        }
+        throw new Error('Network response was not ok');
+    })
+    .then(data => {
+        if (data) {
+            element.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20,6 9,17 4,12"/>
+                </svg>
+                Добавлено!
+            `;
+            element.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            setTimeout(() => {
+                element.innerHTML = originalText;
+                element.disabled = false;
+                element.style.background = 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))';
+                element.style.transform = 'scale(1)';
+            }, 2000);
+            
+            showNotification('Товар добавлен в корзину!', 'success');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        element.innerHTML = originalText;
+        element.disabled = false;
+        element.style.transform = 'scale(1)';
+        showNotification('Ошибка при добавлении товара', 'error');
+    });
+}
+
+// Функция для получения CSRF токена из cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 // Обновление состояния кнопок

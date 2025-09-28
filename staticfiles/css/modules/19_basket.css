@@ -355,29 +355,6 @@
     margin-top: var(--spacing-md);
 }
 
-.action-btn-item {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: inherit;
-    box-shadow: var(--shadow-sm);
-}
-
-.action-btn-item.wishlist {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--color-accent);
-}
-
-.action-btn-item.wishlist:hover {
-    background: var(--color-accent);
-    color: var(--color-white);
-}
 
 .summary-card-modern {
     background: var(--color-white);

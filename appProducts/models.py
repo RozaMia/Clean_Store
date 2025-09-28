@@ -266,14 +266,40 @@ class OrderItem(models.Model):
         verbose_name_plural = "Товары в заказе"
 
 class ContactMessage(models.Model):
+    CATEGORY_CHOICES = [
+        ('general', 'Общий вопрос'),
+        ('help', 'Помощь'),
+        ('return', 'Возврат товара'),
+        ('complaint', 'Жалоба'),
+        ('suggestion', 'Предложение'),
+        ('technical', 'Техническая поддержка'),
+        ('cooperation', 'Сотрудничество'),
+        ('other', 'Другое'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('new', 'Новое'),
+        ('in_progress', 'В работе'),
+        ('resolved', 'Решено'),
+        ('closed', 'Закрыто'),
+    ]
+    
     name = models.CharField("Имя", max_length=100)
     email = models.EmailField("Email")
+    phone = models.CharField("Телефон", max_length=20, blank=True)
+    category = models.CharField("Категория", max_length=20, choices=CATEGORY_CHOICES, default='general')
+    subject = models.CharField("Тема", max_length=200, blank=True)
     message = models.TextField("Сообщение")
-    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField("Статус", max_length=20, choices=STATUS_CHOICES, default='new')
+    admin_notes = models.TextField("Заметки администратора", blank=True)
+    created_at = models.DateTimeField("Дата создания", auto_now_add=True)
+    updated_at = models.DateTimeField("Дата обновления", auto_now=True)
+    resolved_at = models.DateTimeField("Дата решения", blank=True, null=True)
 
     def __str__(self):
-        return f"Сообщение от {self.name}"
+        return f"[{self.get_category_display()}] {self.name} - {self.subject or 'Без темы'}"
 
     class Meta:
         verbose_name = "Сообщение с сайта"
         verbose_name_plural = "Сообщения с сайта"
+        ordering = ['-created_at']

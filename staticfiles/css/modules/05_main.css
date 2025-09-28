@@ -1,10 +1,8 @@
-/* ===== MAIN CONTENT ===== */
 .main {
     margin-top: var(--spacing-lg);
     min-height: calc(100vh - 200px);
 }
 
-/* ===== ALERTS ===== */
 .alert {
     padding: var(--spacing-md) var(--spacing-lg);
     border-radius: var(--border-radius);

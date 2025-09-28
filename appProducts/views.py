@@ -7,6 +7,7 @@ from django.db.models import Sum, F, Prefetch
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods, require_POST
 from django.http import JsonResponse
+import json
 from .models import Category, Subcategory, Product, CartItem, Order, OrderItem, ContactMessage
 from .forms import OrderForm, ContactForm
 from django.contrib.auth.decorators import login_required
@@ -254,9 +255,25 @@ def add_to_cart(request, product_id):
             
         messages.success(request, f"{product.name} добавлен в корзину (количество: {quantity})!")
         logger.info(f"Пользователь {request.user.username} добавил {quantity} x {product.name} в корзину")
+        
+        # Если это AJAX запрос, возвращаем JSON ответ
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or 'application/json' in request.headers.get('Accept', ''):
+            return JsonResponse({
+                'success': True,
+                'message': f"{product.name} добавлен в корзину!",
+                'cart_count': CartItem.objects.filter(user=request.user).count()
+            })
             
     except Exception as e:
         logger.error(f"Ошибка при добавлении товара в корзину: {e}")
+        
+        # Если это AJAX запрос, возвращаем JSON ошибку
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or 'application/json' in request.headers.get('Accept', ''):
+            return JsonResponse({
+                'success': False,
+                'message': 'Произошла ошибка при добавлении товара в корзину'
+            }, status=400)
+            
         messages.error(request, "Произошла ошибка при добавлении товара в корзину")
         return redirect('appProducts:category_list')
     
@@ -417,10 +434,13 @@ def contact_view(request):
                 ContactMessage.objects.create(
                     name=form.cleaned_data['name'],
                     email=form.cleaned_data['email'],
+                    phone=form.cleaned_data.get('phone', ''),
+                    category=form.cleaned_data['category'],
+                    subject=form.cleaned_data.get('subject', ''),
                     message=form.cleaned_data['message']
                 )
-                logger.info(f"Получено сообщение от {form.cleaned_data['email']}")
-                messages.success(request, "Ваше сообщение отправлено! Мы свяжемся с вами.")
+                logger.info(f"Получено сообщение [{form.cleaned_data['category']}] от {form.cleaned_data['email']}")
+                messages.success(request, "Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.")
                 return redirect('appProducts:contact')
             except Exception as e:
                 logger.error(f"Ошибка при сохранении сообщения: {e}")

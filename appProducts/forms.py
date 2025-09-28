@@ -1,5 +1,6 @@
 from django import forms
 from .validators import phone_validator
+from .models import ContactMessage
 
 
 class OrderForm(forms.Form):
@@ -58,11 +59,36 @@ class ContactForm(forms.Form):
             'placeholder': 'your@email.com'
         })
     )
+    phone = forms.CharField(
+        max_length=20,
+        label="Телефон (необязательно)",
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': '+7 (XXX) XXX-XX-XX'
+        })
+    )
+    category = forms.ChoiceField(
+        choices=ContactMessage.CATEGORY_CHOICES,
+        label="Категория обращения",
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        })
+    )
+    subject = forms.CharField(
+        max_length=200,
+        label="Тема (необязательно)",
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Краткое описание вопроса'
+        })
+    )
     message = forms.CharField(
         widget=forms.Textarea(attrs={
             'class': 'form-control',
             'rows': 5,
-            'placeholder': 'Введите ваше сообщение'
+            'placeholder': 'Подробно опишите ваш вопрос или проблему'
         }), 
         label="Сообщение"
     )
