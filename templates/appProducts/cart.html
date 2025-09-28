@@ -460,9 +460,45 @@ function updateTotals() {
 // Очистка корзины
 function clearCart() {
     if (confirm('Очистить всю корзину? Это действие нельзя отменить.')) {
-        showNotification('Корзина очищена', 'info');
-        setTimeout(() => location.reload(), 1000);
+        // Отправляем AJAX запрос на сервер
+        fetch("{% url 'appProducts:clear_cart' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Ошибка при очистке корзины', 'error');
+        });
     }
+}
+
+// Функция для получения CSRF токена
+function getCsrfToken() {
+    const token = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+    if (token) return token;
+    
+    // Попробуем получить из cookies
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') {
+            return decodeURIComponent(value);
+        }
+    }
+    return '';
 }
 
 // Применение промокода

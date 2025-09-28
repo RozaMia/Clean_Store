@@ -369,6 +369,32 @@ def remove_from_cart(request, item_id):
             return JsonResponse({'success': False, 'message': 'Ошибка при удалении товара'})
         return redirect('appProducts:cart')
 
+@login_required
+@require_POST
+def clear_cart(request):
+    """Очистка всей корзины пользователя"""
+    try:
+        cart_items = CartItem.objects.filter(user=request.user)
+        items_count = cart_items.count()
+        cart_items.delete()
+        
+        # Если это AJAX запрос, возвращаем JSON
+        if request.headers.get('Content-Type') == 'application/json' or request.headers.get('Accept') == 'application/json':
+            return JsonResponse({
+                'success': True, 
+                'message': f'Корзина очищена. Удалено товаров: {items_count}'
+            })
+        
+        messages.success(request, f'Корзина очищена. Удалено товаров: {items_count}')
+        return redirect('appProducts:cart')
+        
+    except Exception as e:
+        logger.error(f"Error clearing cart: {e}")
+        if request.headers.get('Content-Type') == 'application/json' or request.headers.get('Accept') == 'application/json':
+            return JsonResponse({'success': False, 'message': 'Ошибка при очистке корзины'})
+        messages.error(request, 'Ошибка при очистке корзины')
+        return redirect('appProducts:cart')
+
 
 
 
